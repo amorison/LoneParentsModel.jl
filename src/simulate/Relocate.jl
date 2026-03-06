@@ -8,7 +8,7 @@ using ..MoveHouse
 export relocate!, selectRelocate
 
 
-selectRelocate(person, pars) = canLiveAlone(person) && person.status == WorkStatus.worker && 
+selectRelocate(person, pars) = canLiveAlone(person) && statusWorker(person) &&
     isSingle(person) && livesInSharedHouse(person)
 
 function relocate!(person, time, model, pars)

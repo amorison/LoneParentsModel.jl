@@ -288,8 +288,8 @@ end
     childCareDemand :: Int						= 168
     freeChildCareHoursPreSchool :: Int			= 24
     freeChildCareHoursSchool :: Int				= 32
-    "weekly care supply for child, teenager, student, worker, retired, unemployed"
-    careSupplyByStatus :: Vector{Int}			= [ 0, 10, 24, 32, 60, 48 ]
+    "weekly care supply for child, teenager, student, FixedShiftEmployed, FlexibleShiftEmployed, retired, unemployed"
+    careSupplyByStatus :: Vector{Int}			= [ 0, 10, 24, 32, 32, 60, 48 ]
     careQuantum :: Int							= 2
 end
 

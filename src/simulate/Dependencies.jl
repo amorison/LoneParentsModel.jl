@@ -120,7 +120,7 @@ end
 function findOtherGuardian(person, people, pars)
     candidates = [ p for p in people if 
         isFemale(p) && canLiveAlone(p) && !isSingle(p) && 
-            (p.status == WorkStatus.worker || p.partner.status == WorkStatus.worker) ]
+            (statusWorker(p) || statusWorker(p.partner)) ]
 
     if length(candidates) > 0
         return rand(candidates)

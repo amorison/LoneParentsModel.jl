@@ -15,7 +15,10 @@ export WorkStatus
     child
     teenager
     student
-    worker
+    "Agent is employed with fixed working hours."
+    FixedShiftEmployed
+    "Agent has flexible working hours, working when job tasks are available."
+    FlexibleShiftEmployed
     retired
     unemployed
 end
@@ -68,7 +71,7 @@ end
 statusChild(p) = p.status == WorkStatus.child
 statusTeenager(p) = p.status == WorkStatus.teenager
 statusStudent(p) = p.status == WorkStatus.student
-statusWorker(p) = p.status == WorkStatus.worker
+statusWorker(p) = p.status == WorkStatus.FixedShiftEmployed || p.status == WorkStatus.FlexibleShiftEmployed
 statusRetired(p) = p.status == WorkStatus.retired
 statusUnemployed(p) = p.status == WorkStatus.unemployed
 

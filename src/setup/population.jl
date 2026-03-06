@@ -208,7 +208,7 @@ function initWork!(person, pars)
         return
     end
 
-    person.status = WorkStatus.worker
+    person.status = WorkStatus.FixedShiftEmployed
 
     workingTime = 0
     for i in pars.startWorkingAge[class]:floor(Int, person.age)
@@ -329,7 +329,7 @@ end
 
 
 function initJobs!(model, pars)
-    hiredPeople = [p for p in model.pop if p.status == WorkStatus.worker]
+    hiredPeople = [p for p in model.pop if statusWorker(p)]
     
     classShares, ageBandShares = calcAgeClassShares(hiredPeople, pars)
     

@@ -104,7 +104,7 @@ function marriage!(man, time, model, pars)
     manMarriageProb = ageclass > length(pars.maleMarriageModifierByDecade) ? 
         0.0 : pars.basicMaleMarriageProb * pars.maleMarriageModifierByDecade[ageclass]
 
-    if man.status != WorkStatus.worker || man.careNeedLevel > 1
+    if !statusWorker(man) || man.careNeedLevel > 1
         manMarriageProb *= pars.notWorkingMarriageBias
     end
 

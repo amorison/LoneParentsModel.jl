@@ -103,7 +103,7 @@ end
 
 
 function assignJob!(person, month, shift, pars)
-    changeStatus!(person, WorkStatus.worker, pars)
+    changeStatus!(person, WorkStatus.FixedShiftEmployed, pars)
     person.unemploymentMonths = 0
     person.monthHired = month
     person.wage = computeWage(person, pars)

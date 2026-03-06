@@ -123,7 +123,7 @@ function updateIncome!(model, time, pars)
         #=independentMembers = filter(x->!isDependent(x), house.occupants)
         if length(independentMembers) == 1
             independentPerson = independentMembers[1]
-         #   if independentPerson.status == WorkStatus.worker
+         #   if statusWorker(independentPerson.status)
          #       house.povertyLineIncome = pars.singleWorker
          #   elseif independentPerson.status == WorkStatus.retired
          #       house.povertyLineIncome = pars.singlePensioner
@@ -131,12 +131,12 @@ function updateIncome!(model, time, pars)
         elseif length(independentMembers) == 2
             independentPerson_1 = independentMembers[1]
             independentPerson_2 = independentMembers[2]
-            if independentPerson_1.status == WorkStatus.worker == independentPerson_2.status
+            if statusWorker(independentPerson_1.status) && statusWorker(independentPerson_2)
                 house.povertyLineIncome = pars.marriedCouple
             elseif (independentPerson_1.status == WorkStatus.retired && 
-                    independentPerson_2.status == WorkStatus.worker) || 
+                    statusWorker(independentPerson_2)) ||
                 (independentPerson_2.status == WorkStatus.retired && 
-                    independentPerson_1.status == WorkStatus.worker)
+                    statusWorker(independentPerson_1))
                 house.povertyLineIncome = pars.mixedCouple
             elseif independentPerson_1.status == WorkStatus.retired == independentPerson_2.status
                 house.povertyLineIncome = pars.couplePensioners
