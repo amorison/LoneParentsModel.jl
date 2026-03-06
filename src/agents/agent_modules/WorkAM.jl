@@ -10,8 +10,15 @@ export setEmptyJobSchedule!, loseJob!
 export statusChild, statusTeenager, statusStudent, statusWorker, statusRetired, statusUnemployed
 export WorkStatus
 
-# better (scoped) enums from package EnumX
-@enumx WorkStatus child teenager student worker retired unemployed
+"Work status of agents."
+@enumx WorkStatus begin
+    child
+    teenager
+    student
+    worker
+    retired
+    unemployed
+end
 
 const WST = WorkStatus.T
 
