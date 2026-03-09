@@ -4,7 +4,7 @@ module Wealth
 using StatsBase
 using Distributions
 
-using IncomeCM
+using ..IncomeCM
 
 
 export updateWealth!

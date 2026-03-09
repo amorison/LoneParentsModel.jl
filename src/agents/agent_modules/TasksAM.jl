@@ -1,10 +1,10 @@
 module TasksAM
     
 
-using Utilities
+using ..Utilities
 
 
-using InstitutionsAM, Tasks
+using ..InstitutionsAM, ..Tasks
 
 
 export TaskPerson

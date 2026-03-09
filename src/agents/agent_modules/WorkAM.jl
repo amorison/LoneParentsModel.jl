@@ -3,7 +3,7 @@ module WorkAM
 
 using EnumX
 
-using Shifts
+using ..Shifts
 
 export Work
 export setEmptyJobSchedule!, loseJob!

@@ -1,8 +1,14 @@
 #= Parameter handling. Since parameters are split into categories some special proecessing needs to be done so this is not generic enough to be moved into a library. =#
 
+module HandleParams
 
-using ParamUtils
 using YAML
+using ArgParse
+using ..ParamUtils
+using ..FullModelPars: SimulationPars, reseed0!
+using ..ParametersDef: ModelPars
+
+export loadParameters
 
 
 "Extract name of parameter category from struct type name."
@@ -94,4 +100,6 @@ function loadParameters(argv, cmdl...)
     end
 
     simpars, pars, args
+end
+
 end

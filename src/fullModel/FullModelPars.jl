@@ -11,10 +11,6 @@ import Random.seed!
 
 export SimulationPars, reseed0!, seed!
 
-# semantic model parameters
-include("../parameters/parameters.jl")
-
-
 "General simulation parameters"
 @with_kw mutable struct SimulationPars 
     dt :: Rational{Int} = 1//12      # step size 

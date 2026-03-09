@@ -1,8 +1,17 @@
-using BasicInfoAM, KinshipAM, WorkAM, DependenciesAM
-using BasicHouseAM
-using FamilyIM, DependenciesIM
-using IncomeCM, JobMarketCM
-using CareCM
+module SetupPopulation
+
+using Random: shuffle
+
+using ..BasicInfoAM, ..KinshipAM, ..WorkAM, ..DependenciesAM
+using ..BasicHouseAM
+using ..FamilyIM, ..DependenciesIM
+using ..IncomeCM, ..JobMarketCM
+using ..CareCM
+using ..Utilities: remove_unsorted!
+using ..FullModelPerson: Person
+using ..Shifts: Shift
+using ..TasksCareCM: initCareTasks!, socialCareDemandPerDay
+using ..WorkAM: WorkStatus
 
 # return agents with age in interval minAge, maxAge
 # assumes pop is sorted by age
@@ -346,4 +355,6 @@ function initCare!(model, pars)
         
         initCareTasks!(person, pars)
     end
+end
+
 end

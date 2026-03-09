@@ -5,10 +5,10 @@
 module Benefits
     
 
-using Utilities
+using ..Utilities
 
-using BasicInfoAM, KinshipAM, WorkAM, DependenciesAM#, DemoPerson
-using FamilyIM, HousingIM
+using ..BasicInfoAM, ..KinshipAM, ..WorkAM, ..DependenciesAM
+using ..FamilyIM, ..HousingIM
 
 export computeBenefits!
 

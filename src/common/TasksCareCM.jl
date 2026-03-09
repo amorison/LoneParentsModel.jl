@@ -1,9 +1,9 @@
 module TasksCareCM
     
 
-using Utilities
+using ..Utilities
 
-using MaternityAM, TasksAM 
+using ..MaternityAM, ..TasksAM
 
 
 export socialCareDemandPerDay, weeklyCareSupply, initCareTasks!

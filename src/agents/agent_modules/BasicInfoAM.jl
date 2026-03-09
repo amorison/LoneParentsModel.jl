@@ -1,8 +1,5 @@
 module BasicInfoAM
 
-
-using Utilities
-
 export BasicInfo
 export isFemale, isMale, hasBirthday, yearsold
 export Gender, male, female, unknown

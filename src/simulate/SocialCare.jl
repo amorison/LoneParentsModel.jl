@@ -2,10 +2,10 @@ module SocialCare
 
 
 using Distributions
-using Utilities
-using BasicInfoAM, WorkAM
-using CareCM
-using TasksCare
+using ..Utilities
+using ..BasicInfoAM, ..WorkAM
+using ..CareCM
+using ..TasksCare
 
 export selectSocialCareTransition, socialCareTransition!, socialCarePreCalc!
 export SocialCareCache

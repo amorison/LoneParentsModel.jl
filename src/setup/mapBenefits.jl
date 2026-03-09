@@ -1,3 +1,5 @@
+module SetupMapBenefits
+
 function initializeLHA!(towns, pars)
     # this is stupid but at this point towns is not a matrix any more and since
     # in Julia the writing order of Matrix literals differs from their vectorisation
@@ -8,4 +10,6 @@ function initializeLHA!(towns, pars)
     end
     
     nothing
+end
+
 end

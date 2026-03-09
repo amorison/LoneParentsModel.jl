@@ -1,5 +1,8 @@
+module SetupMap
 
-export createTowns, initializeHousesInTowns
+using ..FullModelPerson: PersonTown, PersonHouse
+
+export createTowns, initializeHousesInTowns!
 
 
 function createTowns(pars) 
@@ -51,3 +54,5 @@ function initializeHousesInTowns!(towns, pars)
     
     houses  
 end  # function initializeHousesInTwons 
+
+end

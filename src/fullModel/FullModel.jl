@@ -5,27 +5,26 @@ Implementation of the full model, containing all usable modules.
 
 module FullModel
 
+using Random: shuffle!
 
-using Utilities
+
+using ..Utilities
 
 # entity types
-using FullModelPerson, FullModelHouse, Towns, Tasks, Shifts, World 
+using ..FullModelPerson, ..FullModelHouse, ..Towns, ..Tasks, ..Shifts, ..World
 # common modules
-using TasksCareCM
+using ..TasksCareCM
 
-
-include("../setup/map.jl")
-include("../setup/population.jl")
-include("../setup/mapPop.jl")
-include("../setup/mapBenefits.jl")
 
 # simulation processes
-using Dependencies, Age, Social, TasksCare, Income, SocialCare, Relocate, Divorce, Marriage, Death
-using Birth, JobTransition, Benefits, Wealth, HousingTopDown
+using ..Dependencies, ..Age, ..Social, ..TasksCare, ..Income, ..SocialCare, ..Relocate, ..Divorce, ..Marriage, ..Death
+using ..Birth, ..JobTransition, ..Benefits, ..Wealth, ..HousingTopDown
 
-# event subscription
-include("fullModelEvents.jl")
-
+using ..SetupMap: createTowns, initializeHousesInTowns!
+using ..SetupMapBenefits: initializeLHA!
+using ..SetupMapPop: assignCouplesToHouses!
+using ..SetupPopulation: createPyramidPopulation, initClass!, initWork!, initJobs!, initCare!
+using ..FullModelPerson: PersonTown, PersonHouse, schoolCareP
 
 export Model, createModel!, initializeModel!, stepModel!
 

@@ -1,7 +1,7 @@
 module DependenciesAM
     
 
-using Utilities
+using ..Utilities
 
 
 export Dependency

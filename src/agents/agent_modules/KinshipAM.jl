@@ -1,6 +1,6 @@
 module KinshipAM
 
-using Utilities
+using ..Utilities
 
 export Kinship
 export hasChildren, addChild!, isSingle, parents, siblings, nChildren, 

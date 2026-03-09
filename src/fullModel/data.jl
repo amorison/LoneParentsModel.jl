@@ -1,3 +1,5 @@
+module FullModelData
+
 using CSV
 using Tables
 
@@ -39,4 +41,6 @@ function loadWorkData(unemplFName, wealthFName)
     wealth = CSV.File(wealthFName, header=0) |> Tables.matrix
     
     WorkData(unemployment[:, 1], wealth[:, 1])
+end
+
 end

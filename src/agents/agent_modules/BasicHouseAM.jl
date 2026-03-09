@@ -1,7 +1,7 @@
 module BasicHouseAM
     
 
-using Utilities
+using ..Utilities
 
 
 export BasicHouse, HouseLocation

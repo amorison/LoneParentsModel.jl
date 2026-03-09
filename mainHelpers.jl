@@ -4,31 +4,13 @@ Some common infrastructure for setting up and running the model.
 
 
 
-include("lib/loadLibsPath.jl")
-
-# add various directories to Julia's model search path
-addToLoadPath!(String(@__DIR__) * "/.", 
-               String(@__DIR__) * "/lib",
-               String(@__DIR__) * "/src",
-               String(@__DIR__) * "/src/common",
-               String(@__DIR__) * "/src/agents",
-               String(@__DIR__) * "/src/agents/agent_modules",
-               String(@__DIR__) * "/src/agents/interactions",
-               String(@__DIR__) * "/src/simulate",
-               String(@__DIR__) * "/src/fullModel"
-               )
-
 using ArgParse
 
-using Utilities
-
-using FullModelPars
-using FullModel
-
-
-include("src/fullModel/data.jl")
-
-include("src/handleParams.jl")
+using LoneParentsModel.Utilities
+using LoneParentsModel.FullModelPars
+using LoneParentsModel.FullModel
+using LoneParentsModel.FullModelData
+using LoneParentsModel.HandleParams
 
 
 "Generate and return a usable model object."

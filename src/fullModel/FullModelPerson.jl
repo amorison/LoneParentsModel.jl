@@ -1,11 +1,11 @@
 module FullModelPerson
 
 
-using CompositeStructs
+using ..CompositeStructs
 
-using Utilities
+using ..Utilities
 
-using Tasks, Towns, FullModelHouse
+using ..Tasks, ..Towns, ..FullModelHouse
 
 export Person
 export PersonHouse, PersonTown, PersonTask 
@@ -14,9 +14,9 @@ export schoolCareP
 
 
 
-using InstitutionsAM
-using WorkAM, KinshipAM, MaternityAM, BasicInfoAM, CareAM, ClassAM, DependenciesAM, TasksAM
-using BenefitsAM, BasicHouseAM
+using ..InstitutionsAM
+using ..WorkAM, ..KinshipAM, ..MaternityAM, ..BasicInfoAM, ..CareAM, ..ClassAM, ..DependenciesAM, ..TasksAM
+using ..BenefitsAM, ..BasicHouseAM
 
 
 """

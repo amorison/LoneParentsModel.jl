@@ -1,13 +1,13 @@
 module Dependencies
     
 
-using Utilities
+using ..Utilities
 
-using ChangeEvents
+using ..ChangeEvents
 
-using BasicInfoAM, KinshipAM, WorkAM #, DemoPerson
-using DependenciesIM
-using Age, Death, MoveHouse 
+using ..BasicInfoAM, ..KinshipAM, ..WorkAM
+using ..DependenciesIM
+using ..Age, ..Death, ..MoveHouse
 
 
 export selectAssignGuardian, assignGuardian!, findFamilyGuardian, findOtherGuardian

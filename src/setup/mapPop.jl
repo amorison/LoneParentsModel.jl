@@ -1,6 +1,9 @@
+module SetupMapPop
+
 using Random
 
-using HousingIM
+using ..HousingIM
+using ..FullModelPerson: Person, PersonHouse, isFemale, isMale, isSingle, undefinedHouse
 
 export assignCouplesToHouses!
 
@@ -32,3 +35,5 @@ function assignCouplesToHouses!(population::Array{Person}, houses::Array{PersonH
         end
     end
 end  # function assignCouplesToHouses 
+
+end

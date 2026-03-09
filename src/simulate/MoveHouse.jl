@@ -1,9 +1,9 @@
 module MoveHouse
     
-using Utilities
-using BasicHouseAM
-using HousingIM
-using World
+using ..Utilities
+using ..BasicHouseAM
+using ..HousingIM
+using ..World
 
 export findEmptyHouseInTown, findEmptyHouseInOrdAdjacentTown, 
         findEmptyHouseAnywhere, movePeopleToEmptyHouse!, movePeopleToHouse!

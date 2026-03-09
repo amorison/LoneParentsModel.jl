@@ -1,9 +1,9 @@
 module Age
 
 
-using ChangeEvents
+using ..ChangeEvents
 
-using MaternityAM, KinshipAM
+using ..MaternityAM, ..KinshipAM
 
 export selectAgeTransition, ageTransition!  
 export ChangeAge1Yr

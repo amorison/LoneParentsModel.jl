@@ -1,11 +1,11 @@
 module Divorce
     
 
-using Utilities
+using ..Utilities
 
-using BasicInfoAM, KinshipAM, WorkAM #, DemoPerson
-using FamilyIM, DependenciesIM
-using MoveHouse, Social
+using ..BasicInfoAM, ..KinshipAM, ..WorkAM
+using ..FamilyIM, ..DependenciesIM
+using ..MoveHouse, ..Social
 
 export selectDivorce, divorce!, divorcePreCalc!
 export DivorceCache

@@ -1,7 +1,7 @@
 module SocialCM
     
 
-using ChangeEvents
+using ..ChangeEvents
 
     
 export changeStatus!

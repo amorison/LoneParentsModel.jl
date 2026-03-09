@@ -1,9 +1,9 @@
 module HousingIM
     
 
-using Utilities
-using BasicInfoAM
-using BasicHouseAM
+using ..Utilities
+using ..BasicInfoAM
+using ..BasicHouseAM
 
 export moveToHouse!, resetHouse!, livingTogether
 

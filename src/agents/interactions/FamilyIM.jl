@@ -1,7 +1,7 @@
 module FamilyIM
     
-using Utilities
-using BasicInfoAM, KinshipAM
+using ..Utilities
+using ..BasicInfoAM, ..KinshipAM
 
 export setAsParentChild!, setAsPartners!, resetPartner!, setParent!
 export hasAliveChild, ageYoungestAliveChild, related1stDegree  

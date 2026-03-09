@@ -1,8 +1,8 @@
 module DependenciesIM
     
 
-using Utilities
-using DependenciesAM
+using ..Utilities
+using ..DependenciesAM
 
 export canLiveAlone, isOrphan, setAsGuardianDependent!, setAsProviderProvidee!
 export setAsIndependent!, setAsSelfproviding!, resolveDependency!

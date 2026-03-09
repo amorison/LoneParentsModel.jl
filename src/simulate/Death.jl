@@ -1,12 +1,12 @@
 module Death
 
 
-using Utilities
+using ..Utilities
 
-using ChangeEvents
+using ..ChangeEvents
 
-using BasicInfoAM, WorkAM, KinshipAM #, DemoPerson
-using HousingIM, FamilyIM
+using ..BasicInfoAM, ..WorkAM, ..KinshipAM
+using ..HousingIM, ..FamilyIM
 
 export death!, setDead!, deathPreCalc!
 export DeathCache

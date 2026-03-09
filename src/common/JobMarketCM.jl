@@ -1,11 +1,11 @@
 module JobMarketCM
     
 
-using Utilities
+using ..Utilities
 
 
-using WorkAM, MaternityAM
-using IncomeCM, SocialCM
+using ..WorkAM, ..MaternityAM
+using ..IncomeCM, ..SocialCM
 
 
 export ageBand, calcAgeClassShares, assignJobs!, computeURByClassAge

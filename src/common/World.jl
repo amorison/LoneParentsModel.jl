@@ -1,6 +1,6 @@
 module World
     
-using BasicHouseAM
+using ..BasicHouseAM
 
 export adjacent8Towns, findHousesInTown, emptyHouses, emptyHousesInTown
 

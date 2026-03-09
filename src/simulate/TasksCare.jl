@@ -1,13 +1,13 @@
 module TasksCare
     
 
-using Utilities
+using ..Utilities
 
-using ChangeEvents
+using ..ChangeEvents
 
-using KinshipAM, TasksAM, Tasks #, DemoPerson
-using TasksCareCM, SocialCM
-using Age, Death
+using ..KinshipAM, ..TasksAM, ..Tasks
+using ..TasksCareCM, ..SocialCM
+using ..Age, ..Death
 
 export availableCareTime, removeAllCareAndTasks!, careNeedChanged!, careSupplyChanged!, distributeCare! 
 export schoolCare

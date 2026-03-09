@@ -2,13 +2,13 @@ module Social
 
 using Distributions: Normal, LogNormal
 
-using Utilities
+using ..Utilities
 
-using ChangeEvents
-using BasicInfoAM, WorkAM #, DemoPerson
-using IncomeIM, DependenciesIM
-using SocialCM, IncomeCM
-using Age
+using ..ChangeEvents
+using ..BasicInfoAM, ..WorkAM #, DemoPerson
+using ..IncomeIM, ..DependenciesIM
+using ..SocialCM, ..IncomeCM
+using ..Age
 
 export socialTransition!, selectSocialTransition, socialPreCalc!, studentStartWorking!
 export SocialCache

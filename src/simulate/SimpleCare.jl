@@ -1,7 +1,7 @@
 module SimpleCare
     
 
-using CareCM
+using ..CareCM
 
 
 export socialCareSupply, socialCareDemand, householdSocialCareNeed 

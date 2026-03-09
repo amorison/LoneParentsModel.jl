@@ -1,11 +1,11 @@
 module Birth
 
 
-using Utilities
+using ..Utilities
 
-using BasicInfoAM, KinshipAM, WorkAM, MaternityAM#, DemoPerson
-using FamilyIM, HousingIM, DependenciesIM
-using SocialCM
+using ..BasicInfoAM, ..KinshipAM, ..WorkAM, ..MaternityAM
+using ..FamilyIM, ..HousingIM, ..DependenciesIM
+using ..SocialCM
 
 export selectBirth, birth!, birthPreCalc! 
 export BirthCache

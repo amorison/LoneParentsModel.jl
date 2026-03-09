@@ -3,9 +3,10 @@ Handle event subscriptions.
 """
 
 
-using ChangeEvents
-using SocialCM
-using Age, Death, Dependencies, TasksCare 
+using ..ChangeEvents
+using ..SocialCM
+using ..Age, ..Death, ..Dependencies, ..TasksCare
+using ..Social: SocialT
 
 
 function ChangeEvents.trigger!(c::ChangeAge1Yr, args...)

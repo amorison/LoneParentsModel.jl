@@ -5,8 +5,8 @@ using StatsBase
 using Distributions
 
 
-using JobMarketCM
-using WorkAM, MaternityAM
+using ..JobMarketCM
+using ..WorkAM, ..MaternityAM
 
 
 function assignUnemploymentDuration!(unemployed, uRates, durationShares, pars)

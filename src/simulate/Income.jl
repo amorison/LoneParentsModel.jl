@@ -1,10 +1,10 @@
 module Income
     
 
-using Utilities
+using ..Utilities
 
-using WorkAM, MaternityAM
-using BasicHouseAM
+using ..WorkAM, ..MaternityAM
+using ..BasicHouseAM
 
 export updateIncome!
 

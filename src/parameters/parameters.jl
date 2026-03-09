@@ -1,3 +1,5 @@
+module ParametersDef
+
 using  Parameters
 export MapPars, PopulationPars, DivorcePars, WorkPars, ModelPars
 
@@ -355,3 +357,4 @@ ModelPars() = ModelPars(MapPars(), BenefitMapPars(), PopulationPars(), BirthPars
               BenefitPars(), DivorcePars(), MarriagePars(), CarePars(), TaskCarePars(), HousingPars(), 
               DataPars())
 
+end

@@ -1,12 +1,12 @@
 module Marriage
 
 
-using Utilities
+using ..Utilities
 
-using BasicInfoAM, KinshipAM, DependenciesAM, WorkAM, BasicHouseAM
-using Towns #, DemoPerson, DemoHouse
-using FamilyIM, HousingIM, DependenciesIM
-using MoveHouse
+using ..BasicInfoAM, ..KinshipAM, ..DependenciesAM, ..WorkAM, ..BasicHouseAM
+using ..Towns
+using ..FamilyIM, ..HousingIM, ..DependenciesIM
+using ..MoveHouse
 
 
 export marriage!, selectMarriage, marriagePreCalc!

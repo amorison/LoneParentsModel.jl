@@ -1,10 +1,10 @@
 module FullModelHouse
     
 
-using CompositeStructs
+using ..CompositeStructs
 
-using Utilities
-using BasicHouseAM, IncomeHouseAM
+using ..Utilities
+using ..BasicHouseAM, ..IncomeHouseAM
 
 export House
 export occupantType

@@ -1,9 +1,9 @@
 using MiniObserve
 
-using BasicInfoAM, KinshipAM, WorkAM, BasicHouseAM
-using DependenciesIM
-using FullModelPerson, FullModelHouse
-using TasksCare
+using LoneParentsModel.BasicInfoAM, LoneParentsModel.KinshipAM, LoneParentsModel.WorkAM, LoneParentsModel.BasicHouseAM
+using LoneParentsModel.DependenciesIM
+using LoneParentsModel.FullModelPerson, LoneParentsModel.FullModelHouse
+using LoneParentsModel.TasksCare
 
 # mean and variance
 const MVA = MeanVarAcc{Float64}
