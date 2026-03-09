@@ -100,7 +100,7 @@ function assignSchoolCare!(agent, pars)
         return nothing
     end
     for task in agent.openTasks
-        if task.typ == 1 && duringSchoolTime(task, pars)
+        if task.typ == TaskKind.ChildCare && duringSchoolTime(task, pars)
             acceptTask!(task, [], schoolCare(), pars)
             markTaskAssigned!(task)
         end
@@ -177,14 +177,14 @@ function careWeightDistance(carer, caree, pars)
 end
 
 "Preference for a given potential carer dependent on task type."
-function taskAskWeight(potentialCarer, caree, taskType, pars)
+function taskAskWeight(potentialCarer, caree, taskType::TaskKind.T, pars)
     weight = 1.0
     
     weight *= careWeightDistance(potentialCarer, caree, pars)
     
     # parent, child, sibling, etc.
     rel = relatedStatus(potentialCarer, caree)
-    weight *= pars.careWeightRelated[rel, taskType]
+    weight *= pars.careWeightRelated[rel, Integer(taskType)]
     
     weight
 end
@@ -219,9 +219,6 @@ function getChunkOfOpenTasks!(agent, tt)
 end
 
 
-# simplified version for now
-taskTypes(pars) = 1:2
-
 # TODO
 function availabilityWeight(carer, tasks, par)
     t = availableCareTime(carer, par)/length(tasks)
@@ -242,7 +239,7 @@ function assignOpenTasks!(agent, askedTasks, pars)
     ttWeights = zeros(length(potentialCarers))
     weights = zeros(length(potentialCarers))
     
-    for tt in taskTypes(pars)
+    for tt in instances(TaskKind.T)
         # calculate how likely it is that an agent is going to be asked
         for (i,pCarer) in enumerate(potentialCarers)
             ttWeights[i] = taskAskWeight(pCarer, agent, tt, pars)
@@ -287,7 +284,7 @@ function taskImportance(task, agent, pars) :: Float64
     
     # parent, child, sibling, etc.
     rel = relatedStatus(agent, task.owner)
-    importance *= pars.careWeightRelated[rel, task.typ]
+    importance *= pars.careWeightRelated[rel, Integer(task.typ)]
     
     importance *= task.urgency
     

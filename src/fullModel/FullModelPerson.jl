@@ -61,7 +61,7 @@ const PersonTask = ATask{Person}
 const undefinedTown = PersonTown((-1,-1), 0.0)
 const undefinedHouse = PersonHouse(undefinedTown, (-1, -1))
 const undefinedPerson = Person(nothing)
-const undefinedTask = PersonTask(0, undefinedPerson, undefinedPerson, 0, 0, 0)
+const undefinedTask = PersonTask(TaskKind.ChildCare, undefinedPerson, undefinedPerson, 0, 0, 0)
 
 Utilities.undefined(::T) where {T} = undefinedT(T)
 Utilities.undefined(t::DataType) = undefinedT(t)

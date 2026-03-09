@@ -1,11 +1,18 @@
 module Tasks
 
-export ATask, taskTimeToDay, taskTimeToHour
+using EnumX
+
+export ATask, TaskKind, taskTimeToDay, taskTimeToHour
+
+@enumx TaskKind begin
+    ChildCare = 1
+    SocialCare
+end
 
 
 mutable struct ATask{PERSON}
     "task type: 1 - child care; 2 - social care"
-    typ :: Int
+    typ :: TaskKind.T
     owner :: PERSON
     worker :: PERSON
     "Time in h after 0:00 on Monday."
