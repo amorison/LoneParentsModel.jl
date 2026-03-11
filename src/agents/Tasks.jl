@@ -2,11 +2,12 @@ module Tasks
 
 using EnumX
 
-export ATask, TaskKind, taskTimeToDay, taskTimeToHour
+export ATask, TaskKind, taskTimeToDay, taskTimeToHour, taskIsCare
 
 @enumx TaskKind begin
     ChildCare = 1
     SocialCare
+    Work
 end
 
 
@@ -27,6 +28,10 @@ end
 "Task time -> day of the week."
 taskTimeToDay(t) = (t-1) ÷ 24 + 1
 taskTimeToHour(t) = (t-1) % 24 + 1
+
+function taskIsCare(tk::ATask)
+    tk.typ != TaskKind.Work
+end
 
 
 end

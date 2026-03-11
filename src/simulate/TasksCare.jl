@@ -228,6 +228,11 @@ end
 
 "Assign all open tasks of an agent to a potential carer."
 function assignOpenTasks!(agent, askedTasks, pars)
+    workTasks = getChunkOfOpenTasks!(agent, TaskKind.Work)
+    if !isempty(workTasks)
+        addAskedTasks!(agent, workTasks, askedTasks)
+    end
+
     if !hasOpenTasks(agent)
         return nothing
     end
@@ -239,7 +244,7 @@ function assignOpenTasks!(agent, askedTasks, pars)
     ttWeights = zeros(length(potentialCarers))
     weights = zeros(length(potentialCarers))
     
-    for tt in instances(TaskKind.T)
+    for tt in (TaskKind.ChildCare, TaskKind.SocialCare)
         # calculate how likely it is that an agent is going to be asked
         for (i,pCarer) in enumerate(potentialCarers)
             ttWeights[i] = taskAskWeight(pCarer, agent, tt, pars)
@@ -296,9 +301,6 @@ end
 
 "Get importance of current tasks at a given hour. Returns list of priorites and list of tasks, an empty array if there are none, or nothing if agent has to work."
 function getImportanceAt(agent, t, pars)
-    if agent.jobSchedule[t]
-        return nothing
-    end
     tasks = findTasksAt(agent, t)
     
     [ (taskImportance(tt, agent, pars), tt) for tt in tasks ]

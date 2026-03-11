@@ -6,6 +6,8 @@ using ..Utilities
 
 using ..WorkAM, ..MaternityAM
 using ..IncomeCM, ..SocialCM
+using ..Tasks: TaskKind
+using ..FullModelPerson: PersonTask
 
 
 export ageBand, calcAgeClassShares, assignJobs!, computeURByClassAge
@@ -113,6 +115,15 @@ function assignJob!(person, month, shift, pars)
     person.workingHours = pars.weeklyHours[person.careNeedLevel+1]
     person.availableWorkingHours = person.workingHours
     person.jobSchedule = weeklySchedule(shift, person.workingHours)
+
+    for hour in 1:24
+        for day in 1:7
+            if person.jobSchedule[hour, day]
+                task = PersonTask(TaskKind.Work, person, person, 24*(day-1)+hour, 1.0, 1.0)
+                push!(person.openTasks, task)
+            end
+        end
+    end
 end
 
 "Assign job shifts to unemployed workers."

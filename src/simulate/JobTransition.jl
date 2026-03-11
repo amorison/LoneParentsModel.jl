@@ -11,7 +11,6 @@ using ..Utilities
 using ..WorkAM
 using ..JobMarketCM, ..IncomeCM, ..SocialCM
 
-
 export selectUnemployed, selectEmployed, unemployedTransition!, employedTransition!, jobPreCalc!
 export JobCache
 

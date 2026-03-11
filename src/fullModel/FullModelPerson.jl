@@ -94,10 +94,6 @@ end
 =#
 
 function TasksAM.howBusyAt(p::Person, hour)
-    if p.jobSchedule[hour]
-        return 1.0
-    end
-    
     return p.taskSchedule[hour]
 end
 
