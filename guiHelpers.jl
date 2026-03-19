@@ -110,18 +110,27 @@ task_pos(t) = Float64(taskTimeToDay(t)), Float64((25-taskTimeToHour(t)))
 
 function update_calendar!(assigned, open, work, busy, agent)
     empty!(assigned)
+    empty!(work)
     for t in agent.assignedTasks
-        push!(assigned, task_pos(t.time) .+ (.4, .4))
+        if t.typ == TaskKind.ChildCare || t.typ == TaskKind.SocialCare
+            push!(assigned, task_pos(t.time) .+ (.4, .4))
+        elseif t.typ == TaskKind.Work
+            push!(work, task_pos(t.time) .+ (.1, .1))
+        else
+            error("Unknown task kind: $(t.typ)")
+        end
     end
     empty!(open)
     for t in agent.openTasks
-        push!(open, task_pos(t.time) .+ (.4, .4))
-    end
-    empty!(work)
-    for t in 1:24*7
-        if agent.jobSchedule[t]
-            push!(work, task_pos(t) .+ (.1, .1))
+        if t.typ == TaskKind.ChildCare || t.typ == TaskKind.SocialCare
+            push!(open, task_pos(t.time) .+ (.4, .4))
+        elseif t.typ == TaskKind.Work
+            # FIXME: represent missed work
+        else
+            error("Unknown task kind: $(t.typ)")
         end
+    end
+    for t in 1:24*7
         busy[t] = howBusyAt(agent, t) 
     end
 end
