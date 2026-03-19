@@ -3,6 +3,7 @@ include("mainHelpers.jl")
 include("analysis.jl")
 
 using GLMakie
+using LoneParentsModel.FullModelPerson: weeklyTodoTally
 
 
 include("guiHelpers.jl")
@@ -161,10 +162,11 @@ function main(parOverrides...)
             "$n_fsibs full siblings\n" *
             "$n_hsibs half siblings\n" *
             "$n_ch children" 
+        weeklyTally = weeklyTodoTally(f_agent)
         obs_agent2[] = "$(f_agent.status)\n" * 
-            "working hours: $(count(f_agent.jobSchedule))\n" *
+            "working hours: $(weeklyTally.work)\n" *
             "care need: $(f_agent.careNeedLevel)\n" *
-            "#tasks: $(sum(length.(f_agent.todo)))"
+            "#tasks: $(weeklyTally.childCare + weeklyTally.socialCare)"
             
         obs_year[] = "$(floor(Int, Float64(time)))"
     end

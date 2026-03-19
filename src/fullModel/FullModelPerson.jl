@@ -139,5 +139,31 @@ function Utilities.dump(io, person::Person, FS="\t", ES=",")
     Utilities.dump(io, person.dependencies, FS, ES)
 end
 
+struct TaskTally
+    childCare::Int
+    socialCare::Int
+    work::Int
+end
+
+function weeklyTodoTally(person::Person)::TaskTally
+    childCare = 0
+    socialCare = 0
+    work = 0
+    for day in person.todo
+        for task in day
+            if task.typ == TaskKind.ChildCare
+                childCare += 1
+            elseif task.typ == TaskKind.SocialCare
+                socialCare += 1
+            elseif task.typ == TaskKind.Work
+                work += 1
+            else
+                error("Unkown task kind: $(task.typ)")
+            end
+        end
+    end
+    TaskTally(childCare, socialCare, work)
+end
+
 
 end
