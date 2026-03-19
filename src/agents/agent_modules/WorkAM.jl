@@ -7,7 +7,7 @@ using ..Shifts
 using ..Tasks: taskIsCare
 
 export Work
-export setEmptyJobSchedule!, loseJob!
+export loseJob!
 export statusChild, statusTeenager, statusStudent, statusWorker, statusRetired, statusUnemployed
 export WorkStatus
 
@@ -47,7 +47,6 @@ const WST = WorkStatus.T
     # type fixed for now, needs changes in CompositeStructs to make generic
     jobShift :: Shift = Shift()
     daysOff :: Vector{Int} = []
-    jobSchedule :: Matrix{Bool} = zeros(Bool, 24, 7)
     "sum of actual working hours"
     availableWorkingHours :: Int = 0
     "lifetime work"
@@ -77,14 +76,7 @@ statusRetired(p) = p.status == WorkStatus.retired
 statusUnemployed(p) = p.status == WorkStatus.unemployed
 
 
-
-function setEmptyJobSchedule!(work)
-    fill!(work.jobSchedule, false)
-end
-
-
 function loseJob!(person)
-    setEmptyJobSchedule!(person)
     person.monthHired = -1
     person.income = 0
     person.workingHours = 0

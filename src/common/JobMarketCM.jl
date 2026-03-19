@@ -114,11 +114,11 @@ function assignJob!(person, month, shift, pars)
     person.daysOff = [x for x in 1:8 if !(x in shift.days)]
     person.workingHours = pars.weeklyHours[person.careNeedLevel+1]
     person.availableWorkingHours = person.workingHours
-    person.jobSchedule = weeklySchedule(shift, person.workingHours)
+    jobSchedule = weeklySchedule(shift, person.workingHours)
 
     for hour in 1:24
         for day in 1:7
-            if person.jobSchedule[hour, day]
+            if jobSchedule[hour, day]
                 task = PersonTask(TaskKind.Work, person, person, 24*(day-1)+hour, 1.0, 1.0)
                 push!(person.openTasks, task)
             end
