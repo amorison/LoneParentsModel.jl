@@ -29,16 +29,6 @@ function income_deciles(pop)
 end
 
 
-function work_by_time(pop)
-    nWorkers = zeros(Int, 7, 24)
-    for p in pop
-        nWorkers .+= p.jobSchedule
-    end
-    
-    nWorkers
-end
-
-
 requiresCare(person, pars) = person.careNeedLevel > 0 || person.age < 13
 providesCare(person, pars) = person.careNeedLevel == 0 && person.age >= 13
 
