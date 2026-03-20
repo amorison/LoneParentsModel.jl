@@ -125,6 +125,8 @@ end # computeBirthProb
 function effectsOfMaternity!(woman, pars)
     startMaternity!(woman)
     
+    # FIXME: work tasks need to be suspended while on maternity leave
+    # and then reaccepted when leave ends.
     woman.workingHours = 0
     woman.income = 0
     woman.availableWorkingHours = 0
