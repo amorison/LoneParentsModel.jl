@@ -10,6 +10,7 @@ using ..Utilities
 
 using ..WorkAM
 using ..JobMarketCM, ..IncomeCM, ..SocialCM
+using ..FullModelPerson: weeklyTodoTally
 
 export selectUnemployed, selectEmployed, unemployedTransition!, employedTransition!, jobPreCalc!
 export JobCache
@@ -29,7 +30,12 @@ function jobPreCalc!(model, time, pars)
     unemploymentRate = model.unemploymentSeries[floor(Int, year - 1860) + 1]
     uRates = computeURByClassAge(unemploymentRate, classShares, ageShares, pars)         
     model.jobCache = JobCache(uRates)
-    
+
+    # FIXME: is that the right place? Ideally, we would have stateless diagnostics...
+    for person in model.pop
+        tally = weeklyTodoTally(person)
+        person.availableWorkingHours = tally.work
+    end
     nothing
 end
 
