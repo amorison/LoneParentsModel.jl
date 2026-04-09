@@ -58,6 +58,7 @@ end
 
 function startStudying!(person, pars)
     person.classRank += 1 
+    # FIXME: should change status to WorkStatus.student?
 end
 
 doneStudying(person, pars) = person.classRank >= 4
