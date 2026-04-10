@@ -305,7 +305,7 @@ end
     careSupplyMaternity :: Int					= 98
     "effect of task importance on acceptance probability"
     acceptProbPolarity :: Float64				= 2
-    "Care weight by relatedness and type. Relatedness (carer is): child, parent, partner, sibling, other. Type: see TaskKind."
+    "Care weight by relatedness and type. Relatedness (carer is): child, parent, partner, sibling, other. Type: see TaskI.weightClass."
     careWeightRelated :: Matrix{Float64}		= [ Inf 0.5 50.0; 1.0 1.0 50.0; Inf 1.0 50.0; 0.8 0.5 50.0; 0.5 0.2 50.0]
     "Care weight by (spatial) distance in order: same house, same town, otherwise."
     careWeightDistance :: Vector{Float64}		= [1.0, 0.5, 0.1]

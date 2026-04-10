@@ -4,7 +4,7 @@ module WorkAM
 using EnumX
 
 using ..Shifts
-using ..Tasks: taskIsCare
+import ..TaskI
 
 export Work
 export loseJob!
@@ -82,10 +82,10 @@ function loseJob!(person)
     person.workingHours = 0
     person.jobShift = EmptyShift
     person.jobTenure = 0
-    filter!(taskIsCare, person.openTasks)
-    filter!(taskIsCare, person.assignedTasks)
+    filter!(TaskI.isCare, person.openTasks)
+    filter!(TaskI.isCare, person.assignedTasks)
     for todoDay in person.todo
-        filter!(taskIsCare, todoDay)
+        filter!(TaskI.isCare, todoDay)
     end
 end
 

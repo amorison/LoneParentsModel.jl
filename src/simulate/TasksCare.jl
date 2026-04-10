@@ -8,6 +8,7 @@ using ..ChangeEvents
 using ..KinshipAM, ..TasksAM, ..Tasks
 using ..TasksCareCM, ..SocialCM
 using ..Age, ..Death
+import ..TaskI
 
 export availableCareTime, removeAllCareAndTasks!, careNeedChanged!, careSupplyChanged!, distributeCare! 
 export schoolCare
@@ -100,7 +101,7 @@ function assignSchoolCare!(agent, pars)
         return nothing
     end
     for task in agent.openTasks
-        if task.typ == TaskKind.ChildCare && duringSchoolTime(task, pars)
+        if task isa Tasks.ChildCare && duringSchoolTime(task, pars)
             acceptTask!(task, [], schoolCare(), pars)
             markTaskAssigned!(task)
         end
@@ -177,26 +178,26 @@ function careWeightDistance(carer, caree, pars)
 end
 
 "Preference for a given potential carer dependent on task type."
-function taskAskWeight(potentialCarer, caree, taskType::TaskKind.T, pars)
+function taskAskWeight(potentialCarer, caree, taskType, pars)
     weight = 1.0
     
     weight *= careWeightDistance(potentialCarer, caree, pars)
     
     # parent, child, sibling, etc.
     rel = relatedStatus(potentialCarer, caree)
-    weight *= pars.careWeightRelated[rel, Integer(taskType)]
+    weight *= pars.careWeightRelated[rel, TaskI.weightClass(taskType)]
     
     weight
 end
 
 "Return all open tasks of type `tt` at a (quasi) randomly selected day."
-function getChunkOfOpenTasks!(agent, tt)
+function getChunkOfOpenTasks!(agent, taskType)
     rtasks = Vector{eltype(agent.openTasks)}()
     day = 0
     for i in length(agent.openTasks):-1:1
         task = agent.openTasks[i]
         
-        if task.typ != tt
+        if task isa taskType
             continue
         end
         
@@ -228,7 +229,7 @@ end
 
 "Assign all open tasks of an agent to a potential carer."
 function assignOpenTasks!(agent, askedTasks, pars)
-    workTasks = getChunkOfOpenTasks!(agent, TaskKind.Work)
+    workTasks = getChunkOfOpenTasks!(agent, Tasks.Work{})
     if !isempty(workTasks)
         addAskedTasks!(agent, workTasks, askedTasks)
     end
@@ -244,7 +245,7 @@ function assignOpenTasks!(agent, askedTasks, pars)
     ttWeights = zeros(length(potentialCarers))
     weights = zeros(length(potentialCarers))
     
-    for tt in (TaskKind.ChildCare, TaskKind.SocialCare)
+    for tt in (Tasks.ChildCare{}, Tasks.SocialCare{})
         # calculate how likely it is that an agent is going to be asked
         for (i,pCarer) in enumerate(potentialCarers)
             ttWeights[i] = taskAskWeight(pCarer, agent, tt, pars)
@@ -288,8 +289,8 @@ function taskImportance(task, agent, pars) :: Float64
     importance = 1.0
     
     # parent, child, sibling, etc.
-    rel = relatedStatus(agent, task.owner)
-    importance *= pars.careWeightRelated[rel, Integer(task.typ)]
+    rel = relatedStatus(agent, task.owner)  # FIXME: should not require owner for every task type
+    importance *= pars.careWeightRelated[rel, TaskI.weightClass(typeof(task))]
     
     importance *= task.urgency
     

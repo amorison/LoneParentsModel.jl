@@ -6,6 +6,7 @@ using ..CompositeStructs
 using ..Utilities
 
 using ..Tasks, ..Towns, ..FullModelHouse
+import ..TaskI
 
 export Person
 export PersonHouse, PersonTown, PersonTask 
@@ -34,7 +35,7 @@ Person ties various agent modules into one compound agent type.
     Class...
     Benefits...
     Dependency{Person}...
-    TaskPerson{ATask{Person}}...
+    TaskPerson{Person}...
     
     pos::House{Person, Town{House}} = undefinedHouse
     # undefined Person
@@ -57,19 +58,19 @@ InstitutionsAM.isRealPerson(p) = p.age >= 0
 
 const PersonTown = Town{House}
 const PersonHouse = House{Person, PersonTown}
-const PersonTask = ATask{Person}
+const PersonTask = TaskI.Task{Person}
 const undefinedTown = PersonTown((-1,-1), 0.0)
 const undefinedHouse = PersonHouse(undefinedTown, (-1, -1))
 const undefinedPerson = Person(nothing)
-const undefinedTask = PersonTask(TaskKind.ChildCare, undefinedPerson, undefinedPerson, 0, 0, 0)
 
+# FIXME: this shouldn't be necessary
 Utilities.undefined(::T) where {T} = undefinedT(T)
 Utilities.undefined(t::DataType) = undefinedT(t)
 undefinedT(::Type{PersonHouse}) = undefinedHouse
 undefinedT(::Type{House}) = undefinedHouse
 undefinedT(::Type{PersonTown}) = undefinedTown
 undefinedT(::Type{Person}) = undefinedPerson
-undefinedT(::Type{PersonTask}) = undefinedTask
+undefinedT(::Type{<:TaskI.Task{Person}}) = Tasks.ChildCare(undefinedPerson, undefinedPerson, 1, 0.0, 0.0)
 
 Utilities.isUndefined(t::T) where {T} = t == undefined(t) 
 
@@ -151,14 +152,14 @@ function weeklyTodoTally(person::Person)::TaskTally
     work = 0
     for day in person.todo
         for task in day
-            if task.typ == TaskKind.ChildCare
+            if task isa Tasks.ChildCare
                 childCare += 1
-            elseif task.typ == TaskKind.SocialCare
+            elseif task isa Tasks.SocialCare
                 socialCare += 1
-            elseif task.typ == TaskKind.Work
+            elseif task isa Tasks.Work
                 work += 1
             else
-                error("Unkown task kind: $(task.typ)")
+                error("Unkown task kind: $(typeof(task))")
             end
         end
     end

@@ -6,8 +6,8 @@ using ..Utilities
 
 using ..WorkAM, ..MaternityAM
 using ..IncomeCM, ..SocialCM
-using ..Tasks: TaskKind
-using ..FullModelPerson: PersonTask
+using ..FullModelPerson: PersonTask, Person
+import ..Tasks
 
 
 export ageBand, calcAgeClassShares, assignJobs!, computeURByClassAge
@@ -119,7 +119,7 @@ function assignJob!(person, month, shift, pars)
     for hour in 1:24
         for day in 1:7
             if jobSchedule[hour, day]
-                task = PersonTask(TaskKind.Work, person, person, 24*(day-1)+hour, 1.0, 1.0)
+                task = Tasks.Work{Person}(person, 24*(day-1)+hour, 1.0, 1.0)
                 push!(person.openTasks, task)
             end
         end
