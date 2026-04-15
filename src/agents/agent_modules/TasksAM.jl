@@ -17,14 +17,14 @@ export tasksColocated, removeAllCare!, removeAllTasks!, taskType
 # repeatedly this can become quite inefficient.
 # * keep assigned tasks in a set?
 # * store tasks by day/owner/type?
-@kwdef mutable struct TaskPerson{TASK}
-    assignedTasks :: Vector{TASK} = []
-    openTasks :: Vector{TASK} = []
+@kwdef mutable struct TaskPerson{P}
+    assignedTasks :: Vector{ATask{P}} = []
+    openTasks :: Vector{ATask{P}} = []
     
     "Hourly schedule over the entire week containing sum of focus per hour."
     taskSchedule :: Matrix{Float64} = zeros(24, 7)
     "Tasks the agent does. Sorted by day for faster access."
-    todo :: Vector{Vector{TASK}} = [ [] for i in 1:7]
+    todo :: Vector{Vector{ATask{P}}} = [ [] for i in 1:7]
     
     "How eagerly the agent accepts tasks."
     diligence :: Float64 = 1.0
