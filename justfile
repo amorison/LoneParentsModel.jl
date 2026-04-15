@@ -9,3 +9,7 @@ run-gui: instantiate
 # instantiate project
 instantiate:
     julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+# resolve deps
+resolve:
+    julia --project=. -e 'using Pkg; Pkg.resolve()'
