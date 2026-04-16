@@ -2,6 +2,7 @@ module TasksCare
     
 
 using ..Utilities
+import ..FullModelPerson: Person
 
 using ..ChangeEvents
 
@@ -55,12 +56,8 @@ end
 
 "Try to assign carers for all open tasks."
 function distributeCare!(model, pars)
-    AgentT = eltype(model.pop)
-    TaskT = eltype(model.pop[1].openTasks)
-    
-    # agent => tasks
-    askedTasks = Dict{AgentT, Vector{TaskT}}()
-    
+    askedTasks = Dict{Person, Vector{ATask{Person}}}()
+
     # tasks can be rejected, plus more important tasks can
     # override already assigned tasks, so we iterate a couple of times
     for i in 1:pars.nIterCareDist
