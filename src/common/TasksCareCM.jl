@@ -3,8 +3,9 @@ module TasksCareCM
 
 using ..Utilities
 
+import ..FullModelPerson: Person
 using ..MaternityAM, ..TasksAM
-using ..Tasks: TaskKind
+using ..Tasks: TaskKind, ATask
 
 
 export socialCareDemandPerDay, weeklyCareSupply, initCareTasks!
@@ -47,23 +48,21 @@ function initCareTasks!(person, pars)
     nSc2ndHalf = sc - nSc1stHalf
     
     # TODO focus, urgency
-    
-    TType = taskType(person)
-    
+
     for day in 1:7
         hour = first
         for h in 1:nSc1stHalf
-            task = TType(TaskKind.SocialCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
+            task = ATask{Person}(TaskKind.SocialCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
             push!(person.openTasks, task)
             hour += 1
         end
         for h in 1:cc
-            task = TType(TaskKind.ChildCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
+            task = ATask{Person}(TaskKind.ChildCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
             push!(person.openTasks, task)
             hour += 1
         end
         for h in 1:nSc2ndHalf
-            task = TType(TaskKind.SocialCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
+            task = ATask{Person}(TaskKind.SocialCare, person, undefined(person), 24*(day-1)+hour, 0.5, 0.5)
             push!(person.openTasks, task)
             hour += 1
         end           
