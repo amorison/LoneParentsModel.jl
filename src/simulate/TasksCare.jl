@@ -68,12 +68,7 @@ function distributeCare!(model, pars)
             end
             assignOpenTasks!(caree, askedTasks, pars)
         end
-        
-        nc = length(askedTasks)
-        # x[2] is the list of tasks
-        nt = sum(x->length(x[2]), askedTasks)
-        #print("$nc\t")
-        
+
         # let carers accept tasks
         for (carer, tasks) in askedTasks
             checkAcceptTasks!(tasks, carer, pars)
