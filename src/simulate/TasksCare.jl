@@ -183,7 +183,7 @@ end
 
 "Return all open tasks of type `tt` at a (quasi) randomly selected day."
 function getChunkOfOpenTasks!(agent, tt)
-    rtasks = Vector{eltype(agent.openTasks)}()
+    rtasks = Vector{ATask{Person}}()
     day = 0
     for i in length(agent.openTasks):-1:1
         task = agent.openTasks[i]
