@@ -91,11 +91,11 @@ function assignSchoolCare!(agent, pars)
     if agent.age < 4 || agent.age >= 16
         return nothing
     end
-    for task in agent.openTasks
-        if task.typ == TaskKind.ChildCare && duringSchoolTime(task, pars)
-            acceptTask!(task, [], schoolCare(), pars)
-            markTaskAssigned!(task)
-        end
+    isForSchoolCare(task) = task.typ == TaskKind.ChildCare && duringSchoolTime(task, pars)
+    tasksToAssign = filter(isForSchoolCare, agent.openTasks)
+    for task in tasksToAssign
+        acceptTask!(task, [], schoolCare(), pars)
+        markTaskAssigned!(task)
     end
     nothing
 end
