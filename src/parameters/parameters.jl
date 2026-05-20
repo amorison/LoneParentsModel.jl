@@ -128,8 +128,7 @@ end
     maleAgeScaling::Float64         = 14.0 
     maleMortalityBias::Float64      = 0.8 
 
-    cumProbClasses::Vector{Float64} = cumsum([0.2, 0.2, 0.2, 0.2, 0.2])
-#    cumProbClasses::Vector{Float64} = cumsum([0.2, 0.35, 0.25, 0.15, 0.05])
+    cumProbClasses::Vector{Float64} = cumsum([0.2, 0.35, 0.25, 0.15, 0.05])
 end # PopulationPars 
 
 
