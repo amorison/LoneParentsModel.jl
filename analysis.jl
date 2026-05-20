@@ -75,7 +75,7 @@ providesCare(person, pars) = person.careNeedLevel == 0 && person.age >= 13
     end
 
     for person in model.pop 
-        @stat("age", MVA, HAF(0.0, 3.0)) <| Float64(person.age)
+        @stat("age", MVA, HAF(0.0, 1.0)) <| Float64(person.age)
         @stat("married", CountAcc) <| (!isSingle(person))
         @stat("single", CountAcc) <| (person.age > 18 && isSingle(person))
         @stat("alive", CountAcc) <| true
