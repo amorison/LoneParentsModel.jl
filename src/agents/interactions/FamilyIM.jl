@@ -4,7 +4,7 @@ using ..Utilities
 using ..BasicInfoAM, ..KinshipAM
 
 export setAsParentChild!, setAsPartners!, resetPartner!, setParent!
-export hasAliveChild, ageYoungestAliveChild, related1stDegree  
+export hasAliveChild, hasYoungInfant, related1stDegree
 export resolvePartnership!, hasOwnChildrenAtHome
 
 
@@ -76,15 +76,14 @@ function hasAliveChild(person)
     false 
 end
 
-
-function ageYoungestAliveChild(person) 
-    youngest = Rational{Int}(Inf)  
-    for child in person.children 
-        if child.alive 
-            youngest = min(youngest,child.age)
-        end 
+"Whether this person has a child younger than one."
+function hasYoungInfant(person)::Bool
+    for child in person.children
+        if child.alive && child.age <= 1
+            return true
+        end
     end
-    youngest 
+    false
 end
 
 

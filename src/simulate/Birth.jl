@@ -11,7 +11,7 @@ export selectBirth, birth!, birthPreCalc!
 export BirthCache
 
 isFertileWoman(p, pars) = isFemale(p) && pars.minPregnancyAge <= p.age <= pars.maxPregnancyAge
-canBePregnant(p) = !isSingle(p) && ageYoungestAliveChild(p) > 1
+canBePregnant(p) = !(isSingle(p) || hasYoungInfant(p))
 isPotentialMother(p, pars) = isFertileWoman(p, pars) && canBePregnant(p)
 
 mutable struct BirthCache{PERSON}
@@ -140,8 +140,7 @@ function effectsOfMaternity!(woman, pars)
 end
 
 
-selectBirth(person, pars) = isFertileWoman(person, pars) && !isSingle(person) && 
-    ageYoungestAliveChild(person) > 1 
+selectBirth(person, pars) = isPotentialMother(person, pars)
 
 
 function birth!(woman::PERSON, currstep, model, pars, addBaby!) where {PERSON}
@@ -149,7 +148,7 @@ function birth!(woman::PERSON, currstep, model, pars, addBaby!) where {PERSON}
                         
     assumption() do
         @assert isFemale(woman) 
-        @assert ageYoungestAliveChild(woman) > 1 
+        @assert !hasYoungInfant(woman)
         @assert !isSingle(woman)
         @assert woman.age >= pars.minPregnancyAge 
         @assert woman.age <= pars.maxPregnancyAge
