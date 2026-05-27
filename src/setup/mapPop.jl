@@ -8,7 +8,7 @@ using ..FullModelPerson: Person, PersonHouse, isFemale, isMale, isSingle, undefi
 export assignCouplesToHouses!
 
 
-"Randomly assign a population of couples to non-inhebted set of houses"
+"Randomly assign a population of couples to non-inhabited set of houses"
 function assignCouplesToHouses!(population::Array{Person}, houses::Array{PersonHouse})
     women = [ person for person in population if isFemale(person) ]
 
