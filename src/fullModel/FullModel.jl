@@ -93,8 +93,8 @@ function createModel!(demoData, workData, pars)
 end
 
 "Create houses."
-function initialConnectH!(houses, towns, pars)
-    newHouses = initializeHousesInTowns!(towns, pars)
+function initialConnectH!(houses, towns, initPop::Int)
+    newHouses = initializeHousesInTowns!(towns, initPop)
     append!(houses, newHouses)
 end
 
@@ -110,7 +110,7 @@ function initializeModel!(
     
     
     # create houses and assign to pop
-    initialConnectH!(model.houses, model.towns, mappars)
+    initialConnectH!(model.houses, model.towns, poppars.initialPop)
     initialConnectP!(model.pop, model.houses, mappars)
     
     # initialise local housing allowance

@@ -37,14 +37,14 @@ end
 
 
 "initialize houses in a given set of towns"
-function initializeHousesInTowns!(towns, pars) 
+function initializeHousesInTowns!(towns, initPop::Int)
     houses = PersonHouse[] 
+    # FIXME: this heuristic works for the default map, should be generalised.
+    gridDim = ceil(Int, 0.6 * sqrt(initPop / 10))
 
     for town in towns
-        adjustedDensity = town.density * pars.mapDensityModifier
-    
-        for hx in 1:pars.townGridDimension, hy in 1:pars.townGridDimension 
-            if rand() < adjustedDensity
+        for hx in 1:gridDim, hy in 1:gridDim
+            if rand() < town.density
                 house = PersonHouse(town, (hx,hy))
                 push!(houses,house)
                 push!(town.houses, house)

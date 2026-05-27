@@ -6,10 +6,8 @@ export MapPars, PopulationPars, DivorcePars, WorkPars, ModelPars
 
 "Parameters describing map properties"
 @with_kw mutable struct MapPars 
-    mapDensityModifier::Float64 = 0.6   # for allocating houses in towns 
     mapGridXDimension::Int      = 8
     mapGridYDimension::Int      = 12
-    townGridDimension::Int      = 25
     map::Matrix{Float64}     = [ 0.0 0.1 0.2 0.1 0.0 0.0 0.0 0.0;
                                     0.1 0.1 0.2 0.2 0.3 0.0 0.0 0.0;
                                     0.0 0.2 0.2 0.3 0.0 0.0 0.0 0.0;
