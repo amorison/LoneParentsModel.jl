@@ -194,7 +194,7 @@ function create_series(fig, labels; args...)
     obsable = Observable(data)
     
     axis, _ = series(fig, obsable; labels=labels, args...)
-    axislegend(axis)
+    axislegend(axis, position = :lt)
     
     obsable, axis
 end
