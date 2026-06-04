@@ -17,11 +17,12 @@ isPotentialMother(p, pars) = isFertileWoman(p, pars) && canBePregnant(p)
 mutable struct BirthCache{PERSON}
     potentialMothers :: Vector{PERSON}
     pPotentialMotherInFertWAndAge :: Vector{Float64}
+    pre51FertScaling::Float64
     classBias :: Vector{Float64}
     nChBias :: Matrix{Float64}
 end
 
-BirthCache{T}() where {T} = BirthCache(T[], Float64[], Float64[], zeros(5, 5))
+BirthCache{T}() where {T} = BirthCache(T[], Float64[], 0.0, Float64[], zeros(5, 5))
 
 "Cache population properties that are used in the calculation of birth rate."
 function birthPreCalc!(model, pars)
@@ -46,6 +47,14 @@ function birthPreCalc!(model, pars)
             end
         end
     end
+
+    pc.pre51FertScaling = 0
+    for (iFertAge, fert51) in enumerate(model.fertFByAge51)
+        age = pars.minPregnancyAge + iFertAge - 1
+        pc.pre51FertScaling += pc.pPotentialMotherInFertWAndAge[age] * fert51
+    end
+    pc.pre51FertScaling = length(model.pop) / pc.pre51FertScaling
+
     for (i, n) in enumerate(cbp)
         pc.pPotentialMotherInFertWAndAge[i] /= n > 0 ? n : Inf 
     end
@@ -79,14 +88,6 @@ function birthPreCalc!(model, pars)
     end
 end
 
-"Proportion of women that can get pregnant in entire population."
-function pPotentialMotherInAllPop(model, pars)
-    n = length(model.birthCache.potentialMothers)
-    
-    n / length(model.pop)
-end
-
-
 function computeBirthProb(woman, pars, model, currstep)
     (curryear,currmonth) = date2yearsmonths(currstep)
     currmonth = currmonth + 1   # adjusting 0:11 => 1:12 
@@ -100,12 +101,10 @@ function computeBirthProb(woman, pars, model, currstep)
     fertAge = ageYears-pars.minPregnancyAge+1
     
     if curryear < 1951
-        # number of children per uk resident and year
-        rawRate = model.pre51Fertility[Int(curryear-pars.startTime+1)] /
-            # scale by number of women that can actually get pregnant
-            pPotentialMotherInAllPop(model, pars) * 
-            # and multiply with age-specific fertility factor 
-            model.fertFByAge51[fertAge]
+        # pre51Fertility is the number of children per uk resident and year,
+        # birth rate by age is then rescaled to match the distribution of 1951
+        rawRate = model.pre51Fertility[Int(curryear-pars.startTime+1)] *
+            model.fertFByAge51[fertAge] * model.birthCache.pre51FertScaling
     else
         # fertility rates are stored as P(pregnant) per year and age
         rawRate = model.fertility[fertAge, curryear-1950] /
