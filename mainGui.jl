@@ -120,7 +120,7 @@ function main(parOverrides...)
         if !f_agent.alive
             f_agent = rand(model.pop)
         end
-        update_network!(positions, f_agent)
+        update_network!(positions, f_agent, model.town_size)
         update_calendar!(obs_assigned[], obs_open[], obs_work[], obs_busy[], f_agent)
         notify(obs_assigned)
         notify(obs_open)

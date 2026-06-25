@@ -33,6 +33,8 @@ mutable struct Model
 # model entities
     "Towns containing houses."
     towns :: Vector{PersonTown}
+    "Size of town grid, for plotting purposes."
+    town_size :: Int
     "Houses (located in towns)."
     houses :: Vector{PersonHouse}
     "The entire population."
@@ -84,7 +86,7 @@ function createModel!(demoData, workData, pars)
     fert = demoData.fertility[:, 1] # age-specific fertility in 1951
     byAgeF = fert ./ (sum(fert)/length(fert)) 
     
-    Model(towns, houses, population, [], [],
+    Model(towns, 0, houses, population, [], [],
             byAgeF, demoData.fertility, demoData.pre51Fertility[yearsFert, 2], 
             demoData.pre51Deaths[yearsMort, 2:3], demoData.deathFemale, demoData.deathMale, 
             workData.unemployment, workData.wealth,

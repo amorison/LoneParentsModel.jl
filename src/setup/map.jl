@@ -41,6 +41,7 @@ function initializeHousesInTowns!(model, initPop::Int)
     houses = PersonHouse[] 
     # FIXME: this heuristic works for the default map, should be generalised.
     gridDim = ceil(Int, sqrt(initPop / 10))
+    model.town_size = gridDim + 1 # that +1 is for plotting purposes
 
     for town in model.towns
         for hx in 1:gridDim, hy in 1:gridDim

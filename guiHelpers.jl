@@ -26,12 +26,10 @@ function setto!(a1::AbstractVector, a2::AbstractVector)
     a1[:] = a2
 end
 
-const town_size = 26
+t_pos(t, town_size) = t.pos[1] * (town_size + 1), (12-t.pos[2]) * (town_size + 1)
+h_pos(h, town_size) = t_pos(h.town, town_size) .+ h.pos
 
-t_pos(t) = t.pos[1] * (town_size+1), (12-t.pos[2]) * (town_size+1)
-h_pos(h) = t_pos(h.town) .+ h.pos 
-
-coords(agent) = h_pos(agent.pos)
+coords(agent, town_size) = h_pos(agent.pos, town_size)
 
 const h_red = colorant"red"
 const h_black = colorant"black"
@@ -48,14 +46,14 @@ end
 function create_map!(fig, model)
 # *** map (towns = green land, otherwise blue water)
     #ax_left = Axis(fig[1:2, 1])
-    towns = [Rect(t_pos(t)..., town_size, town_size) for t in model.towns]
+    towns = [Rect(t_pos(t, model.town_size)..., model.town_size, model.town_size) for t in model.towns]
     colors = [(isempty(t.houses) ? colorant"blue" : colorant"green") for t in model.towns]
     ax_left, _ = poly(fig, towns, color = colors)
     hidespines!(ax_left)
     hidedecorations!(ax_left)
     
 # *** houses, colour marks occupancy
-    houses = [h_pos(h) for h in model.houses]
+    houses = [h_pos(h, model.town_size) for h in model.houses]
     colors = typeof(h_red)[]
     update_house_colors!(colors, model.houses)
     obs_hc = Observable(colors)
@@ -78,29 +76,29 @@ function create_map!(fig, model)
 end
 
 # update network of relatives for agent
-function update_network!(positions, agent)
+function update_network!(positions, agent, town_size)
     empty!.(positions)
-    ac = coords(agent)
+    ac = coords(agent, town_size)
     for c in agent.children
         if !c.alive
             continue
         end
         push!(positions[1], ac)
-        push!(positions[1], coords(c))
+        push!(positions[1], coords(c, town_size))
     end
     for c in parents(agent)
         if isUndefined(c) || !c.alive
             continue
         end
         push!(positions[2], ac)
-        push!(positions[2], coords(c))
+        push!(positions[2], coords(c, town_size))
     end
     for c in siblings(agent)
         if isUndefined(c) || !c.alive
             continue
         end
         push!(positions[3], ac)
-        push!(positions[3], coords(c))
+        push!(positions[3], coords(c, town_size))
     end
 end
 
