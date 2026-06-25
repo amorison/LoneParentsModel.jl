@@ -33,8 +33,6 @@ end
 
 age2yearsmonths(age) = date2yearsmonths(age)
 
-p_yearly2monthly(p) = 1 - (1-p)^(1/12)
-
 limit(mi, v, ma) = min(ma, max(mi, v))
 
 "Very efficiently remove element `index` from `list`. Does not preserve ordering of `list`."
