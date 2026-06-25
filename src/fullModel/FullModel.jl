@@ -94,7 +94,7 @@ end
 
 "Create houses."
 function initialConnectH!(model, initPop::Int)
-    newHouses = initializeHousesInTowns!(model.towns, initPop)
+    newHouses = initializeHousesInTowns!(model, initPop)
     append!(model.houses, newHouses)
 end
 

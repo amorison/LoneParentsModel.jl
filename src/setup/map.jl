@@ -37,12 +37,12 @@ end
 
 
 "initialize houses in a given set of towns"
-function initializeHousesInTowns!(towns, initPop::Int)
+function initializeHousesInTowns!(model, initPop::Int)
     houses = PersonHouse[] 
     # FIXME: this heuristic works for the default map, should be generalised.
     gridDim = ceil(Int, sqrt(initPop / 10))
 
-    for town in towns
+    for town in model.towns
         for hx in 1:gridDim, hy in 1:gridDim
             if rand() < 0.6 * town.density
                 house = PersonHouse(town, (hx,hy))
