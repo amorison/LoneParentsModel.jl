@@ -13,11 +13,6 @@ export DeathCache
 export ChangeDeath
 
 function deathProbability(baseRate, person, model, pars) 
-    # cap age at 150 for admin reasons
-    if person.age >= 150
-        return 1.0
-    end
-
     cRank = person.classRank
     if person.status == WorkStatus.child || person.status == WorkStatus.student
         cRank = person.parentClassRank
@@ -120,8 +115,11 @@ ageDieProb(pars, agep, malep) = pars.baseDieProb + (malep ?
                             exp(agep / pars.femaleAgeScaling) * pars.femaleAgeDieProb)
                             
                             
-# currently leaves dead agents in population
-function death!(person, currstep, model, parameters)
+function death_due(person, currstep, model, parameters)::Bool
+    # cap age at 150
+    if person.age >= 150
+        return true
+    end
 
     (curryear,currmonth) = date2yearsmonths(currstep)
     currmonth += 1 # adjusting 0:11 => 1:12 
@@ -154,14 +152,17 @@ function death!(person, currstep, model, parameters)
                         
     deathProb = limit(0.0, deathProbability(rawRate, person, model, parameters), 1.0)
                         
-    if person.age >= 150 || try_rand_yearly2monthly(deathProb)
-        setDead!(person) 
-        return true 
-        # person.deadYear = self.year  
-    end # rand
-
-    false
+    try_rand_yearly2monthly(deathProb)
 end 
 
+
+# FIXME: currently leaves dead agents in population
+function death!(person, currstep, model, parameters)::Bool
+    dead = death_due(person, currstep, model, parameters)
+    if dead
+        setDead!(person)
+    end
+    dead
+end
 
 end
