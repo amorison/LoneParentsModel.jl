@@ -6,7 +6,7 @@ module Utilities
 
 
 # Functions
-export p_yearly2monthly, applyTransition!, remove_unsorted!, limit 
+export applyTransition!, remove_unsorted!, limit
 export separate
 export sorted_unique!, date2yearsmonths, age2yearsmonths
 export checkAssumptions!, ignoreAssumptions!, assumption, setDelay!, delay
@@ -16,6 +16,7 @@ export dump, dump_property, dump_header
 export sumClassBias, rateBias, preCalcRateBias!
 export WeightSampler, sampleNoReplace!, sampleNoReplaceFrom!, resetSampler!, initWeight!, mapWeights
 export undefined, isUndefined
+export try_rand_yearly2monthly
 
 
 function undefined end
@@ -302,6 +303,21 @@ function mapWeights!(fn, sampler, list)
     for (i, e) in enumerate(list)
         initWeight!(sampler, i, fn(e))
     end
+end
+
+"Whether a random event of the given probability should happen."
+function try_rand(prob::Float64)::Bool
+    rand() < prob
+end
+
+"Whether a random event of the given yearly probability should happen this month."
+function try_rand_yearly2monthly(prob_yearly::Float64)::Bool
+    # Stricly speaking, this doesn't have a yearly probability
+    # of `prob_yearly` if attempted 12 months in a row, but
+    # this avoids events with high probability (~1.0) being biaised
+    # towards happening in January, or happening 12 times a year
+    # instead of only roughly once a year.
+    try_rand(prob_yearly) && rand(1:12) == 12
 end
 
 end # module Utilities  

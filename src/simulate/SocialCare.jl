@@ -53,8 +53,9 @@ function socialCareTransition!(person, time, model, pars)
     
     #baseProb *= classSocialCareBias(model, pars, class)
     baseProb *= model.socialCareCache.classBias[class+1]
-    
-    if rand() > p_yearly2monthly(limit(0.0, baseProb, 1.0))
+    baseProb = limit(0.0, baseProb, 1.0)
+
+    if !try_rand_yearly2monthly(baseProb)
         return false
     end
    

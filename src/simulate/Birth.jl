@@ -143,19 +143,18 @@ selectBirth(person, pars) = isPotentialMother(person, pars)
 
 
 function birth!(woman::PERSON, currstep, model, pars, addBaby!) where {PERSON}
-    _, currmonth = date2yearsmonths(currstep)
     birthProb = computeBirthProb(woman, pars, model, currstep)
-                        
+    birthProb = limit(0.0, birthProb, 1.0)
+
     assumption() do
         @assert isFemale(woman) 
         @assert !hasYoungInfant(woman)
         @assert !isSingle(woman)
         @assert woman.age >= pars.minPregnancyAge 
         @assert woman.age <= pars.maxPregnancyAge
-        @assert birthProb >= 0 
     end
                         
-    if rand() < limit(0.0, birthProb, 1.0) && rand(0:11) == currmonth
+    if try_rand_yearly2monthly(birthProb)
                         
         baby = PERSON(gender=rand([male,female]))
         moveToHouse!(baby, woman.pos)

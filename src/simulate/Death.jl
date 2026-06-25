@@ -154,7 +154,7 @@ function death!(person, currstep, model, parameters)
                         
     deathProb = limit(0.0, deathProbability(rawRate, person, model, parameters), 1.0)
                         
-    if rand() < p_yearly2monthly(deathProb)
+    if person.age >= 150 || try_rand_yearly2monthly(deathProb)
         setDead!(person) 
         return true 
         # person.deadYear = self.year  

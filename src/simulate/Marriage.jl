@@ -112,8 +112,9 @@ function marriage!(man, time, model, pars)
     den = snc + (1-snc) * pars.manWithChildrenBias
 
     prob = manMarriageProb / den * (hasDependents(man) ? pars.manWithChildrenBias : 1)
+    prob = limit(0.0, prob, 1.0)
 
-    if rand() >= p_yearly2monthly(limit(0.0, prob, 1.0)) 
+    if !try_rand_yearly2monthly(prob)
         return nothing
     end
 
