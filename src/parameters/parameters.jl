@@ -106,7 +106,7 @@ end
     startTime :: Rational{Int}  	= 1920
     finishTime :: Rational{Int} 	= 2040 
     "Population size at start of simulation"
-    initialPop::Int                 = 5000    
+    initialPop::Int                 = 50000
     initialPMales :: Float64		= 0.477   # from 1921 census
     # a population of males to be randomly generated in the 
     # range of minStartAge - maxStartAge
