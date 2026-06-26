@@ -4,6 +4,7 @@ using LoneParentsModel.BasicInfoAM, LoneParentsModel.KinshipAM, LoneParentsModel
 using LoneParentsModel.DependenciesIM
 using LoneParentsModel.FullModelPerson, LoneParentsModel.FullModelHouse
 using LoneParentsModel.TasksCare
+import LoneParentsModel.Tasks.taskIsCare
 
 # mean and variance
 const MVA = MeanVarAcc{Float64}
@@ -95,7 +96,7 @@ providesCare(person, pars) = person.careNeedLevel == 0 && person.age >= 13
             @stat("m_status", HAI(0, 1, 5)) <| Int(person.status)
         end
         if requiresCare(person, pars)
-            @stat("open_tasks", MVA) <| Float64(length(person.openTasks))
+            @stat("open_tasks", MVA) <| Float64(length(filter(taskIsCare, person.openTasks)))
         end
         if providesCare(person, pars)
             @stat("av_care_time", MVA) <| Float64(availableCareTime(person, fuse(pars.carepars, pars.taskcarepars)))
