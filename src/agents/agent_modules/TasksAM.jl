@@ -30,7 +30,7 @@ export tasksColocated, removeAllCare!, removeAllTasks!
     diligence :: Float64 = 1.0
     
     # cache this for efficiency
-    taskHours :: Int = 0
+    careTaskHours::Int = 0
 end
 
 
@@ -77,12 +77,11 @@ function scheduleTask!(agent, task)
     @assert !(task in agent.todo[day])
     push!(agent.todo[day], task)
     # another hour committed
-    if agent.taskSchedule[task.time] <= 0
-        agent.taskHours += 1
+    if taskIsCare(task) && agent.taskSchedule[task.time] <= 0
+        agent.careTaskHours += 1
     end
     agent.taskSchedule[task.time] += task.focus
     @assert agent.taskSchedule[task.time] <= 1.0
-    #@assert agent.taskHours == taskHours(agent)
     nothing
 end
 
@@ -98,11 +97,10 @@ function unscheduleTask!(agent, task)
     remove_unsorted!(agent.todo[day], idx)
     agent.taskSchedule[task.time] -= task.focus
     # freed up an hour
-    if agent.taskSchedule[task.time] <= 0
-        agent.taskHours -= 1
+    if taskIsCare(task) && agent.taskSchedule[task.time] <= 0
+        agent.careTaskHours -= 1
     end
     @assert agent.taskSchedule[task.time] >= 0.0
-    #@assert agent.taskHours == taskHours(agent)
     nothing
 end
 
@@ -129,7 +127,7 @@ function removeAllCare!(person)
     end
     
     fill!(person.taskSchedule, 0.0)
-    person.taskHours = 0
+    person.careTaskHours = 0
     nothing
 end
 
@@ -150,9 +148,6 @@ function acceptTask!(task, tasksToClear, agent, pars)
     scheduleTask!(agent, task)
     nothing
 end
-
-
-taskHours(agent) = count(x->x>0, agent.taskSchedule)
 
 
 howBusyAt(agent, hour) = agent.taskSchedule[hour]

@@ -108,7 +108,7 @@ function addAskedTasks!(carer, tasks, askedTasks)
 end
 
 "Rough measure of availability, does not take into account focus."
-availableCareTime(agent, pars) = weeklyCareSupply(agent, pars) - agent.taskHours
+availableCareTime(agent, pars) = weeklyCareSupply(agent, pars) - agent.careTaskHours
 
 
 "Add agent to list if minimum requirements are met."
