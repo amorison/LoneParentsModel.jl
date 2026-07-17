@@ -41,8 +41,7 @@ function main(parOverrides...)
     obs_careneed, ax_careneed = create_barplot(fig[2,2][1,1], "care need")
     obs_class, ax_class = create_barplot(fig[2,2][1,2], "social class")
     obs_nchildren, ax_nchildren = create_barplot(fig[2,2][2,1], "n children")
-    obs_age_diff, ax_age_diff = create_barplot(fig[2,2][2,2], "couple age diff",
-        axis=(; xticks=LTTicks(WilkinsonTicks(5), -10.0, 1.0)))
+    obs_inc_dec, ax_inc_dec = create_barplot(fig[2,2][2,2], "income decile")
     
     obs_care, ax_care = create_series(fig[2,3], ["care supply", "unmet care need"],
         axis=(; xticks=LTTicks(WilkinsonTicks(5), 1920.0, 1/12)))
@@ -101,7 +100,7 @@ function main(parOverrides...)
             setto!(obs_careneed[], data.careneed.bins)
             setto!(obs_class[], data.class.bins)
             setto!(obs_nchildren[], data.n_children.bins)
-            setto!(obs_age_diff[], data.age_diff.bins)
+            setto!(obs_inc_dec[], data.income_deciles)
             
             setto!(obs_age[], data.age.bins)
             
@@ -144,8 +143,8 @@ function main(parOverrides...)
         autolimits!(ax_class)
         notify(obs_nchildren)
         autolimits!(ax_nchildren)
-        notify(obs_age_diff)
-        autolimits!(ax_age_diff)
+        notify(obs_inc_dec)
+        autolimits!(ax_inc_dec)
         
         notify(obs_age)
         autolimits!(ax_age)
