@@ -47,6 +47,11 @@ function main(parOverrides...)
     
     obs_hc, positions, obs_positions_c, obs_positions_p, obs_positions_s = 
         create_map!(fig[1:2, 1], model)
+
+    obs_agent1_main = Observable("")
+    Label(fig[3, 1][1, 1], obs_agent1_main, tellwidth=false, justification=:left)
+    obs_agent2_main = Observable("")
+    Label(fig[3, 1][1, 2], obs_agent2_main, tellwidth=false, justification=:left)
     
     f_agent = rand(model.pop)
     
@@ -88,9 +93,9 @@ function main(parOverrides...)
     on(quitbutton.clicks) do clicks; goon[]=false; end
     
     obs_year = Observable("")
-    Label(fig[3,1][1,1], obs_year, tellwidth=false, fontsize=25)
+    Label(fig[3,2][1,1], obs_year, tellwidth=false, fontsize=25)
     
-    randbutton = Button(fig[3,1][1,2]; label = "agent", tellwidth = false)    
+    randbutton = Button(fig[3,2][1,2]; label = "agent", tellwidth = false)
     on(randbutton.clicks) do clicks; f_agent = rand(model.pop); end
     
 # *** simulation
@@ -168,6 +173,7 @@ function main(parOverrides...)
         autolimits!(ax_age)
 
         agent_status(f_agent, obs_agent1, obs_agent2)
+        agent_status(f_agent, obs_agent1_main, obs_agent2_main)
 
         obs_year[] = "$(floor(Int, Float64(time)))"
     end
