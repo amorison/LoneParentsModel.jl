@@ -8,6 +8,24 @@ using LoneParentsModel.FullModelPerson: weeklyTodoTally
 
 include("guiHelpers.jl")
 
+function agent_status(agent, obs1, obs2)
+    m_status = isUndefined(agent.partner) ? "single" : "married"
+    m_s = isUndefined(agent.mother) ? "" : "mother"
+    f_s = isUndefined(agent.father) ? "" : "father"
+    n_fsibs, n_hsibs = nSiblings(agent)
+    n_ch = count(x->!isUndefined(x), agent.children)
+    obs1[] = "age: $(floor(Int, agent.age))\n" *
+        "status: $m_status\n" *
+        "living parents: $m_s $f_s\n" *
+        "$n_fsibs full siblings\n" *
+        "$n_hsibs half siblings\n" *
+        "$n_ch children"
+    weeklyTally = weeklyTodoTally(agent)
+    obs2[] = "$(agent.status)\n" *
+        "working hours: $(weeklyTally.work)\n" *
+        "care need: $(agent.careNeedLevel)\n" *
+        "#tasks: $(weeklyTally.childCare + weeklyTally.socialCare)"
+end
 
 function main(parOverrides...)
     args = copy(ARGS)
@@ -148,24 +166,9 @@ function main(parOverrides...)
         
         notify(obs_age)
         autolimits!(ax_age)
-        
-        m_status = isUndefined(f_agent.partner) ? "single" : "married"
-        m_s = isUndefined(f_agent.mother) ? "" : "mother"
-        f_s = isUndefined(f_agent.father) ? "" : "father"
-        n_fsibs, n_hsibs = nSiblings(f_agent)
-        n_ch = count(x->!isUndefined(x), f_agent.children)
-        obs_agent1[] = "age: $(floor(Int, f_agent.age))\n" * 
-            "status: $m_status\n" *
-            "living parents: $m_s $f_s\n" *
-            "$n_fsibs full siblings\n" *
-            "$n_hsibs half siblings\n" *
-            "$n_ch children" 
-        weeklyTally = weeklyTodoTally(f_agent)
-        obs_agent2[] = "$(f_agent.status)\n" * 
-            "working hours: $(weeklyTally.work)\n" *
-            "care need: $(f_agent.careNeedLevel)\n" *
-            "#tasks: $(weeklyTally.childCare + weeklyTally.socialCare)"
-            
+
+        agent_status(f_agent, obs_agent1, obs_agent2)
+
         obs_year[] = "$(floor(Int, Float64(time)))"
     end
 
