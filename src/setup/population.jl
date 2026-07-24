@@ -338,7 +338,7 @@ function initJobs!(model, pars)
     #uRates = computeURByClassAge(unemploymentRate, classShares, ageBandShares, pars)
     
     model.shiftsPool = createShifts(pars)
-    assignJobs!(hiredPeople, model.shiftsPool, -1, pars)
+    assignJobs!(hiredPeople, model, -1, pars)
     
     initWealth!(model.houses, model.wealthPercentiles, pars)
     

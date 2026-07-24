@@ -57,6 +57,7 @@ const WST = WorkStatus.T
     "periods worked so far in current job"
     jobTenure :: Int = 0
     monthHired :: Int = 0
+    socialWorker::Bool = false
 end
 
 

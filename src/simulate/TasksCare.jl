@@ -66,7 +66,7 @@ function distributeCare!(model, pars)
             if !hasOpenTasks(caree) 
                 continue
             end
-            assignOpenTasks!(caree, askedTasks, pars)
+            assignOpenTasks!(caree, askedTasks, model, pars)
         end
 
         # let carers accept tasks
@@ -108,7 +108,7 @@ function addAskedTasks!(carer, tasks, askedTasks)
 end
 
 "Rough measure of availability, does not take into account focus."
-availableCareTime(agent, pars) = weeklyCareSupply(agent, pars) - agent.careTaskHours
+availableCareTime(agent, pars) = max(weeklyCareSupply(agent, pars) - agent.careTaskHours, 0.0)
 
 
 "Add agent to list if minimum requirements are met."
@@ -218,8 +218,18 @@ function availabilityWeight(carer, tasks, par)
     t+1
 end
 
+function supply_informal(carers) :: Float64
+    # see `residualInformalSupplies` in `sim.py`
+    1.0
+end
+
+function supply_formal(carers) :: Float64
+    # see `updateFormalSocialCareSupplies()` in `sim.py`, where price/income is managed depending on distance
+    1.0
+end
+
 "Assign all open tasks of an agent to a potential carer."
-function assignOpenTasks!(agent, askedTasks, pars)
+function assignOpenTasks!(agent, askedTasks, model, pars)
     workTasks = getChunkOfOpenTasks!(agent, TaskKind.Work)
     if !isempty(workTasks)
         addAskedTasks!(agent, workTasks, askedTasks)
@@ -229,10 +239,21 @@ function assignOpenTasks!(agent, askedTasks, pars)
         return nothing
     end
     
-    potentialCarers = createCarerList(agent, pars)
+    potentialInformalCarers = createCarerList(agent, pars)
+    potentialFormalCarers = model.socialWorkersCache
     
+    informalSupply = supply_informal(potentialInformalCarers)
+    formalSupply = supply_formal(potentialFormalCarers)
+
+    informalFactor = informalSupply^pars.betaInformalCare
+    formalFactor = formalSupply^pars.betaFormalCare
+    probInformal = informalFactor / (informalFactor + formalFactor)
+    # should this choice be made inside or outside the loop?
+    potentialCarers = rand() < probInformal ? potentialFormalCarers : potentialInformalCarers
+
     assignSchoolCare!(agent, pars)
     
+    # should some of those weights change between formal and informal carers?
     ttWeights = zeros(length(potentialCarers))
     weights = zeros(length(potentialCarers))
     

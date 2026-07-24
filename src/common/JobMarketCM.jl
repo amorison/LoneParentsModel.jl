@@ -127,11 +127,11 @@ function assignJob!(person, month, shift, pars)
 end
 
 "Assign job shifts to unemployed workers."
-function assignJobs!(hiredAgents, shiftsPool, month, pars)
+function assignJobs!(hiredAgents, model, month, pars)
     # removed that for now, was only effectively used in setup
     #sort!(hiredAgents, by=x->x.unemploymentIndex)
     # TODO draw w/out replacement?
-    shifts = rand(shiftsPool, length(hiredAgents))
+    shifts = rand(model.shiftsPool, length(hiredAgents))
     for person in hiredAgents
         if month == -1
             month = rand(1:12)
@@ -142,6 +142,13 @@ function assignJobs!(hiredAgents, shiftsPool, month, pars)
         shift = shifts[shift_i]
         
         assignJob!(person, month, shift, pars)
+        push!(model.employedPopCache, person)
+        if rand() < pars.socialCareWorkerProb
+            # Also need to mark that person as free during work hours to take
+            # care tasks and paid by doing those tasks.
+            person.socialWorker = true
+            push!(model.socialWorkersCache, person)
+        end
         
         remove_unsorted!(shifts, shift_i)
     end

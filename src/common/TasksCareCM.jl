@@ -22,7 +22,13 @@ function weeklyCareSupply(person, pars)
     
     s = Int(person.status)
     
-    pars.careSupplyByStatus[s+1]
+    informal = pars.careSupplyByStatus[s+1]
+
+    if person.socialWorker
+        return person.workingHours + informal
+    end
+
+    informal
 end
 
 

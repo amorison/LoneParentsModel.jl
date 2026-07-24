@@ -190,7 +190,7 @@ function adjustJobsByAgeAndClass!(acActivePopM, uRates, unemploymentRate, month,
             # NOTE! unemployment duration == time left in unemployment
             sort!(actualUnemployed, by=x->x.unemploymentDuration)
             resize!(actualUnemployed, peopleToHire)
-            assignJobs!(actualUnemployed, model.shiftsPool, month, pars)
+            assignJobs!(actualUnemployed, model, month, pars)
         elseif nEmpiricalUnemployed > length(actualUnemployed)
             nPeopleToFire = min(nEmpiricalUnemployed-length(actualUnemployed), length(employedWorkers))
             mapWeights!(sampler, employedWorkers) do p 

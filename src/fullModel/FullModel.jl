@@ -6,6 +6,7 @@ Implementation of the full model, containing all usable modules.
 module FullModel
 
 using Random: shuffle!
+import OrderedCollections: OrderedSet
 
 
 using ..Utilities
@@ -62,6 +63,8 @@ mutable struct Model
     socialCareCache :: SocialCareCache
     divorceCache :: DivorceCache
     jobCache :: JobCache
+    employedPopCache :: OrderedSet{Person}  # will a Set work here or should use a vector?
+    socialWorkersCache :: OrderedSet{Person}
 end
 
 
@@ -91,7 +94,8 @@ function createModel!(demoData, workData, pars)
             demoData.pre51Deaths[yearsMort, 2:3], demoData.deathFemale, demoData.deathMale, 
             workData.unemployment, workData.wealth,
             BirthCache{Person}(), DeathCache(), MarriageCache{Person}(), SocialCache(),
-            SocialCareCache(), DivorceCache(), JobCache())
+            SocialCareCache(), DivorceCache(), JobCache(),
+            OrderedSet{Person}(), OrderedSet{Person}())
 end
 
 "Create houses."

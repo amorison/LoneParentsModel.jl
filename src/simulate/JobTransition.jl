@@ -61,6 +61,9 @@ function employedTransition!(person, time, model, pars)
     if rand() < probFired
         loseJob!(person)
         changeStatus!(person, WorkStatus.unemployed, pars)
+        person.socialWorker = false
+        pop!(model.employedPopCache, person)
+        pop!(model.socialWorkersCache, person, nothing)
     else        
         person.jobTenure += 1
         if person.workingHours > 0
@@ -85,7 +88,7 @@ function unemployedTransition!(person, curTime, model, pars)
     if rand() < probHired
         # use old function for now
         # TODO adapt
-        assignJobs!([person], model.shiftsPool, date2yearsmonths(curTime)[2], pars)
+        assignJobs!([person], model, date2yearsmonths(curTime)[2], pars)
     end
 end
 

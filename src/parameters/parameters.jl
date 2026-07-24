@@ -184,6 +184,8 @@ end
     probationPeriod :: Int				= 3
     
     hireRate :: Float64					= log(1/(1-0.25)) # expected mean unempl time == 4 months
+    "fraction of workers who are social care frontline workers"
+    socialCareWorkerProb :: Float64 = 0.054
 end
 
 
@@ -288,6 +290,9 @@ end
     "weekly care supply for child, teenager, student, FixedShiftEmployed, FlexibleShiftEmployed, retired, unemployed"
     careSupplyByStatus :: Vector{Int}			= [ 0, 10, 24, 32, 32, 60, 48 ]
     careQuantum :: Int							= 2
+    betaInformalCare :: Float64 = 1.0
+    betaFormalCare :: Float64 = 1.0
+    minDecileAffordFormalCare :: Int = 5
 end
 
 "Care tasks"
