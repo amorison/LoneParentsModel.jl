@@ -3,46 +3,10 @@ include("mainHelpers.jl")
 include("analysis.jl")
 
 using GLMakie
-using LoneParentsModel.FullModelPerson: weeklyTodoTally
+import LoneParentsModel.Tracking
 
 
 include("guiHelpers.jl")
-
-function agent_status(agent, obs1, obs2)
-    m_status = isUndefined(agent.partner) ? "single" : "married"
-    m_s = isUndefined(agent.mother) ? "" : "mother"
-    f_s = isUndefined(agent.father) ? "" : "father"
-    n_fsibs, n_hsibs = nSiblings(agent)
-    n_ch = count(x->!isUndefined(x), agent.children)
-    obs1[] = "age: $(floor(Int, agent.age))\n" *
-        "status: $m_status\n" *
-        "living parents: $m_s $f_s\n" *
-        "$n_fsibs full siblings\n" *
-        "$n_hsibs half siblings\n" *
-        "$n_ch children"
-
-    weeklyTally = weeklyTodoTally(agent)
-
-    ncare_open = 0
-    ncare_assigned = 0
-    for task in agent.openTasks
-        if taskIsCare(task)
-            ncare_open += 1
-        end
-    end
-    for task in agent.assignedTasks
-        if taskIsCare(task)
-            ncare_assigned += 1
-        end
-    end
-    tot_care = ncare_open + ncare_assigned
-
-    obs2[] = "$(agent.status)\n" *
-        "working hours: $(weeklyTally.work) / $(agent.workingHours)\n" *
-        "care done: child: $(weeklyTally.childCare), social: $(weeklyTally.socialCare)\n" *
-        "care need level: $(agent.careNeedLevel)\n" *
-        "cared for: $(ncare_assigned) / $(tot_care)"
-end
 
 function main(parOverrides...)
     args = copy(ARGS)
@@ -70,11 +34,14 @@ function main(parOverrides...)
     obs_agent2_main = Observable("")
     Label(fig[3, 1][1, 2], obs_agent2_main, tellwidth=false, justification=:left)
     
-    f_agent = rand(model.pop)
+    followed_agent = Tracking.pickAgent(model)
     
     obs_pop, ax_pop = create_series(fig[1, 2], ["population size", "#married", "working", "unemployed"];
         axis=(; xticks=LTTicks(WilkinsonTicks(5), 1920.0, 1/12)))
-    
+
+    obs_hh_log = Observable("")
+    Label(fig[1, 3][1, 1], obs_hh_log, tellwidth=false, tellheight=false, justification=:left, valign=:top, halign=:left)
+
     obs_careneed, ax_careneed = create_barplot(fig[2,2][1,1], "care need")
     obs_class, ax_class = create_barplot(fig[2,2][1,2], "social class")
     obs_nchildren, ax_nchildren = create_barplot(fig[2,2][2,1], "n children")
@@ -100,7 +67,7 @@ function main(parOverrides...)
     Label(fig[3,2][1,1], obs_year, tellwidth=false, fontsize=25)
     
     randbutton = Button(fig[3,2][1,2]; label = "agent", tellwidth = false)
-    on(randbutton.clicks) do clicks; f_agent = rand(model.pop); end
+    on(randbutton.clicks) do clicks; followed_agent = Tracking.pickAgent(model); end
     
 # *** simulation
     
@@ -142,11 +109,9 @@ function main(parOverrides...)
         if pause[]
             sleep(0.001)
         end
-        if !f_agent.alive
-            f_agent = rand(model.pop)
-        end
-        update_network!(positions, f_agent, model.town_size)
-        
+        Tracking.update!(followed_agent)
+        update_network!(positions, followed_agent.agent, model.town_size)
+
         notify(obs_hc)
         notify(obs_positions_c)
         notify(obs_positions_p)
@@ -168,7 +133,8 @@ function main(parOverrides...)
         notify(obs_age)
         autolimits!(ax_age)
 
-        agent_status(f_agent, obs_agent1_main, obs_agent2_main)
+        (obs_agent1_main[], obs_agent2_main[]) = Tracking.describeAgent(followed_agent)
+        obs_hh_log[] = Tracking.currentLog(followed_agent)
 
         obs_year[] = "$(floor(Int, Float64(time)))"
     end

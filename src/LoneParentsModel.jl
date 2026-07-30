@@ -62,5 +62,6 @@ include("setup/map.jl")
 include("setup/mapPop.jl")
 include("fullModel/data.jl")
 include("fullModel/FullModel.jl")
+include("gui/Tracking.jl")
 
 end
