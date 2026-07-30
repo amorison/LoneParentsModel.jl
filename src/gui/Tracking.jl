@@ -9,6 +9,8 @@ using ..KinshipAM: nSiblings
 using ..Tasks: taskIsCare
 using ..Utilities: isUndefined
 
+import ..Naming
+
 struct Log
     log::Queue{String}
     size::Int
@@ -30,39 +32,50 @@ mutable struct FollowedAgent
     agent::Person
     house::PersonHouse
     log::Log
+    names::Naming.NamePool
+end
+
+function getName(fa::FollowedAgent, person::Person)::String
+    Naming.getName!(fa.names, person)
 end
 
 function pickAgent(model::Model)::FollowedAgent
     agent = rand(model.pop)
-    FollowedAgent(model, agent, agent.pos, newLog(20))
+    FollowedAgent(model, agent, agent.pos, newLog(20), Naming.newPool())
 end
 
 function update!(fa::FollowedAgent)
     if !fa.agent.alive
-        push!(fa.log, "tracked agent has died")
+        name = getName(fa, fa.agent)
+        push!(fa.log, "$(name) has died")
         if isOccupied(fa.house)
             fa.agent = rand(fa.house.occupants)
-            push!(fa.log, "following another agent from same house")
+            name = getName(fa, fa.agent)
+            push!(fa.log, "following $(name) from same house")
         else
-            push!(fa.log, "this house is empty, picking another one")
             fa.agent = rand(fa.model.pop)
             fa.house = fa.agent.pos
+            Naming.forgetNames!(fa.names)
+            name = getName(fa, fa.agent)
+            push!(fa.log, "following $(name) from a different house")
         end
     end
     if fa.agent.pos !== fa.house
-        push!(fa.log, "agent changed address")
+        name = getName(fa, fa.agent)
+        push!(fa.log, "$(name) changed address")
         fa.house = fa.agent.pos
     end
 end
 
 function describeAgent(fa::FollowedAgent)::Tuple{String, String}
     agent = fa.agent
+    name = getName(fa, agent)
     m_status = isUndefined(agent.partner) ? "single" : "married"
     m_s = isUndefined(agent.mother) ? "" : "mother"
     f_s = isUndefined(agent.father) ? "" : "father"
     n_fsibs, n_hsibs = nSiblings(agent)
     n_ch = count(x->!isUndefined(x), agent.children)
-    obs1 = "age: $(floor(Int, agent.age))\n" *
+    obs1 = "$(name), $(agent.gender), $(floor(Int, agent.age))\n" *
         "status: $m_status\n" *
         "living parents: $m_s $f_s\n" *
         "$n_fsibs full siblings\n" *
