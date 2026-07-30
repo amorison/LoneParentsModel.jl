@@ -20,11 +20,28 @@ function agent_status(agent, obs1, obs2)
         "$n_fsibs full siblings\n" *
         "$n_hsibs half siblings\n" *
         "$n_ch children"
+
     weeklyTally = weeklyTodoTally(agent)
+
+    ncare_open = 0
+    ncare_assigned = 0
+    for task in agent.openTasks
+        if taskIsCare(task)
+            ncare_open += 1
+        end
+    end
+    for task in agent.assignedTasks
+        if taskIsCare(task)
+            ncare_assigned += 1
+        end
+    end
+    tot_care = ncare_open + ncare_assigned
+
     obs2[] = "$(agent.status)\n" *
-        "working hours: $(weeklyTally.work)\n" *
-        "care need: $(agent.careNeedLevel)\n" *
-        "#tasks: $(weeklyTally.childCare + weeklyTally.socialCare)"
+        "working hours: $(weeklyTally.work) / $(agent.workingHours)\n" *
+        "care done: child: $(weeklyTally.childCare), social: $(weeklyTally.socialCare)\n" *
+        "care need level: $(agent.careNeedLevel)\n" *
+        "cared for: $(ncare_assigned) / $(tot_care)"
 end
 
 function main(parOverrides...)
