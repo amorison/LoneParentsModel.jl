@@ -71,13 +71,19 @@ function describeAgent(fa::FollowedAgent)::Tuple{String, String}
     agent = fa.agent
     name = getName(fa, agent)
     m_status = isUndefined(agent.partner) ? "single" : "married"
-    m_s = isUndefined(agent.mother) ? "" : "mother"
-    f_s = isUndefined(agent.father) ? "" : "father"
+    parents = Vector{String}()
+    if !isUndefined(agent.mother)
+        push!(parents, getName(fa, agent.mother) * " (mother)")
+    end
+    if !isUndefined(agent.father)
+        push!(parents, getName(fa, agent.father) * " (father)")
+    end
+    living_parents = join(parents, " & ")
     n_fsibs, n_hsibs = nSiblings(agent)
     n_ch = count(x->!isUndefined(x), agent.children)
     obs1 = "$(name), $(agent.gender), $(floor(Int, agent.age))\n" *
         "status: $m_status\n" *
-        "living parents: $m_s $f_s\n" *
+        "living parents: $living_parents\n" *
         "$n_fsibs full siblings\n" *
         "$n_hsibs half siblings\n" *
         "$n_ch children"
