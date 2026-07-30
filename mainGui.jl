@@ -90,16 +90,6 @@ function main(parOverrides...)
     
     display(GLMakie.Screen(), fig)
     
-    fig2 = Figure(size=(600,900))
-    display(GLMakie.Screen(), fig2)
-    
-    obs_assigned, obs_open, obs_work, obs_busy = create_calendar!(fig2[1,1], f_agent)
-    
-    obs_agent1 = Observable("")
-    Label(fig2[2,1][1,1], obs_agent1, tellwidth=false, justification=:left)
-    obs_agent2 = Observable("")
-    Label(fig2[2,1][1,2], obs_agent2, tellwidth=false, justification=:left)
-    
 # *** buttons    
     
     runbutton = Button(fig[3,3][1,1]; label = "run", tellwidth = false)    
@@ -160,11 +150,6 @@ function main(parOverrides...)
             f_agent = rand(model.pop)
         end
         update_network!(positions, f_agent, model.town_size)
-        update_calendar!(obs_assigned[], obs_open[], obs_work[], obs_busy[], f_agent)
-        notify(obs_assigned)
-        notify(obs_open)
-        notify(obs_work)
-        notify(obs_busy)
         
         notify(obs_hc)
         notify(obs_positions_c)
@@ -189,7 +174,6 @@ function main(parOverrides...)
         notify(obs_age)
         autolimits!(ax_age)
 
-        agent_status(f_agent, obs_agent1, obs_agent2)
         agent_status(f_agent, obs_agent1_main, obs_agent2_main)
 
         obs_year[] = "$(floor(Int, Float64(time)))"
