@@ -8,6 +8,7 @@ using ..FullModelPerson: Person, PersonHouse, weeklyTodoTally
 using ..KinshipAM: nSiblings
 using ..Tasks: taskIsCare
 using ..Utilities: isUndefined
+using ..WorkAM: WorkStatus
 
 import ..Naming
 
@@ -27,9 +28,26 @@ function newLog(size::Int)::Log
     Log(Queue{String}(), size)
 end
 
+mutable struct AgentState
+    partner::Person
+    mother::Person
+    father::Person
+    n_full_siblings::Int64
+    n_half_siblings::Int64
+    n_children::Int64
+    status::WorkStatus.T
+end
+
+function agentState(person::Person)
+    n_fsibs, n_hsibs = nSiblings(person)
+    n_ch = count(x->!isUndefined(x), person.children)
+    AgentState(person.partner, person.mother, person.father, n_fsibs, n_hsibs, n_ch, person.status)
+end
+
 mutable struct FollowedAgent
     model::Model
     agent::Person
+    last_state::AgentState
     house::PersonHouse
     log::Log
     names::Naming.NamePool
@@ -41,19 +59,21 @@ end
 
 function pickAgent(model::Model)::FollowedAgent
     agent = rand(model.pop)
-    FollowedAgent(model, agent, agent.pos, newLog(20), Naming.newPool())
+    FollowedAgent(model, agent, agentState(agent), agent.pos, newLog(30), Naming.newPool())
 end
 
 function update!(fa::FollowedAgent)
+    name = getName(fa, fa.agent)
     if !fa.agent.alive
-        name = getName(fa, fa.agent)
         push!(fa.log, "$(name) has died")
         if isOccupied(fa.house)
             fa.agent = rand(fa.house.occupants)
+            fa.last_state = agentState(fa.agent)
             name = getName(fa, fa.agent)
             push!(fa.log, "following $(name) from same house")
         else
             fa.agent = rand(fa.model.pop)
+            fa.last_state = agentState(fa.agent)
             fa.house = fa.agent.pos
             Naming.forgetNames!(fa.names)
             name = getName(fa, fa.agent)
@@ -61,10 +81,33 @@ function update!(fa::FollowedAgent)
         end
     end
     if fa.agent.pos !== fa.house
-        name = getName(fa, fa.agent)
         push!(fa.log, "$(name) changed address")
         fa.house = fa.agent.pos
     end
+
+    new_state = agentState(fa.agent)
+    if new_state.partner != fa.last_state.partner
+        if isUndefined(new_state.partner)
+            ex_name = getName(fa, fa.last_state.partner)
+            push!(fa.log, "$(name) and $(ex_name) separated")
+        else
+            partner_name = getName(fa, new_state.partner)
+            push!(fa.log, "$(name) married $(partner_name)")
+        end
+    end
+    if new_state.mother != fa.last_state.mother
+        mo_name = getName(fa, fa.last_state.mother)
+        push!(fa.log, "$(name)'s mother, $(mo_name), died")
+    end
+    if new_state.father != fa.last_state.father
+        fa_name = getName(fa, fa.last_state.father)
+        push!(fa.log, "$(name)'s father, $(fa_name), died")
+    end
+    if new_state.status != fa.last_state.status
+        push!(fa.log, "$(name) is now $(new_state.status)")
+    end
+
+    fa.last_state = new_state
 end
 
 function describeAgent(fa::FollowedAgent)::Tuple{String, String}
@@ -79,14 +122,12 @@ function describeAgent(fa::FollowedAgent)::Tuple{String, String}
         push!(parents, getName(fa, agent.father) * " (father)")
     end
     living_parents = join(parents, " & ")
-    n_fsibs, n_hsibs = nSiblings(agent)
-    n_ch = count(x->!isUndefined(x), agent.children)
     obs1 = "$(name), $(agent.gender), $(floor(Int, agent.age))\n" *
         "status: $m_status\n" *
         "living parents: $living_parents\n" *
-        "$n_fsibs full siblings\n" *
-        "$n_hsibs half siblings\n" *
-        "$n_ch children"
+        "$(fa.last_state.n_full_siblings) full siblings\n" *
+        "$(fa.last_state.n_half_siblings) half siblings\n" *
+        "$(fa.last_state.n_children) children"
 
     weeklyTally = weeklyTodoTally(agent)
 
