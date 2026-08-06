@@ -1,13 +1,14 @@
 module Tracking
 
 using DataStructures: Queue
+import GLMakie
 
 using ..BasicHouseAM: isOccupied
 using ..FullModel: Model
 using ..FullModelPerson: Person, PersonHouse, weeklyTodoTally
 using ..KinshipAM: nSiblings
 using ..Tasks: taskIsCare
-using ..Utilities: isUndefined
+using ..Utilities: isUndefined, date2yearsmonths
 using ..WorkAM: WorkStatus
 
 import ..Naming
@@ -62,26 +63,28 @@ function pickAgent(model::Model)::FollowedAgent
     FollowedAgent(model, agent, agentState(agent), agent.pos, newLog(30), Naming.newPool())
 end
 
-function update!(fa::FollowedAgent)
+function update!(fa::FollowedAgent, time::Rational{Int})
+    year, month = date2yearsmonths(time)
+    tStr = "$(year)/$(month+1): "
     name = getName(fa, fa.agent)
     if !fa.agent.alive
-        push!(fa.log, "$(name) has died")
+        push!(fa.log, "$(tStr)$(name) has died")
         if isOccupied(fa.house)
             fa.agent = rand(fa.house.occupants)
             fa.last_state = agentState(fa.agent)
             name = getName(fa, fa.agent)
-            push!(fa.log, "following $(name) from same house")
+            push!(fa.log, "$(tStr)following $(name) from same house")
         else
             fa.agent = rand(fa.model.pop)
             fa.last_state = agentState(fa.agent)
             fa.house = fa.agent.pos
             Naming.forgetNames!(fa.names)
             name = getName(fa, fa.agent)
-            push!(fa.log, "following $(name) from a different house")
+            push!(fa.log, "$(tStr)following $(name) from a different house")
         end
     end
     if fa.agent.pos !== fa.house
-        push!(fa.log, "$(name) changed address")
+        push!(fa.log, "$(tStr)$(name) changed address")
         fa.house = fa.agent.pos
     end
 
@@ -89,22 +92,22 @@ function update!(fa::FollowedAgent)
     if new_state.partner != fa.last_state.partner
         if isUndefined(new_state.partner)
             ex_name = getName(fa, fa.last_state.partner)
-            push!(fa.log, "$(name) and $(ex_name) separated")
+            push!(fa.log, "$(tStr)$(name) and $(ex_name) separated")
         else
             partner_name = getName(fa, new_state.partner)
-            push!(fa.log, "$(name) married $(partner_name)")
+            push!(fa.log, "$(tStr)$(name) married $(partner_name)")
         end
     end
     if new_state.mother != fa.last_state.mother
         mo_name = getName(fa, fa.last_state.mother)
-        push!(fa.log, "$(name)'s mother, $(mo_name), died")
+        push!(fa.log, "$(tStr)$(name)'s mother, $(mo_name), died")
     end
     if new_state.father != fa.last_state.father
         fa_name = getName(fa, fa.last_state.father)
-        push!(fa.log, "$(name)'s father, $(fa_name), died")
+        push!(fa.log, "$(tStr)$(name)'s father, $(fa_name), died")
     end
     if new_state.status != fa.last_state.status
-        push!(fa.log, "$(name) is now $(new_state.status)")
+        push!(fa.log, "$(tStr)$(name) is now $(new_state.status)")
     end
 
     fa.last_state = new_state
@@ -152,6 +155,17 @@ function describeAgent(fa::FollowedAgent)::Tuple{String, String}
         "cared for: $(ncare_assigned) / $(tot_care)"
 
     (obs1, obs2)
+end
+
+function describeOccupants(fa::FollowedAgent)::String
+    # emojis = ['\U1f642', '\U1F610', '\U1FAE9', '\U1F915', '\U1F635']
+    descr = ""
+    for agent in sort(fa.house.occupants, by= a -> a.age, rev = true)
+        name = getName(fa, agent)
+        care = agent.careNeedLevel
+        descr *= "$(name), $(agent.gender), $(floor(Int, agent.age)), care level: $(care)\n"
+    end
+    descr
 end
 
 function currentLog(fa::FollowedAgent)::String

@@ -40,7 +40,9 @@ function main(parOverrides...)
         axis=(; xticks=LTTicks(WilkinsonTicks(5), 1920.0, 1/12)))
 
     obs_hh_log = Observable("")
-    Label(fig[1, 3][1, 1], obs_hh_log, tellwidth=false, tellheight=false, justification=:left, valign=:top, halign=:left)
+    Label(fig[1, 3][1, 1], obs_hh_log, tellwidth=false, tellheight=false, justification=:left, valign=:top, halign=:left, fontsize=15)
+    obs_hh_occupants = Observable("")
+    Label(fig[1, 3][1, 2], obs_hh_occupants, tellwidth=false, tellheight=false, justification=:left, valign=:top, halign=:left, fontsize=20)
 
     obs_careneed, ax_careneed = create_barplot(fig[2,2][1,1], "care need")
     obs_class, ax_class = create_barplot(fig[2,2][1,2], "social class")
@@ -109,7 +111,7 @@ function main(parOverrides...)
         if pause[]
             sleep(0.001)
         end
-        Tracking.update!(followed_agent)
+        Tracking.update!(followed_agent, time)
         update_network!(positions, followed_agent.agent, model.town_size)
 
         notify(obs_hc)
@@ -135,8 +137,10 @@ function main(parOverrides...)
 
         (obs_agent1_main[], obs_agent2_main[]) = Tracking.describeAgent(followed_agent)
         obs_hh_log[] = Tracking.currentLog(followed_agent)
+        obs_hh_occupants[] = Tracking.describeOccupants(followed_agent)
 
-        obs_year[] = "$(floor(Int, Float64(time)))"
+        year, month = date2yearsmonths(time)
+        obs_year[] = "$(year)/$(month+1)"
     end
 
 
