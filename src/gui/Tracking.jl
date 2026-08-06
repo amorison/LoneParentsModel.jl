@@ -37,12 +37,13 @@ mutable struct AgentState
     n_half_siblings::Int64
     n_children::Int64
     status::WorkStatus.T
+    careNeed::Int
 end
 
 function agentState(person::Person)
     n_fsibs, n_hsibs = nSiblings(person)
     n_ch = count(x->!isUndefined(x), person.children)
-    AgentState(person.partner, person.mother, person.father, n_fsibs, n_hsibs, n_ch, person.status)
+    AgentState(person.partner, person.mother, person.father, n_fsibs, n_hsibs, n_ch, person.status, person.careNeedLevel)
 end
 
 mutable struct FollowedAgent
@@ -108,6 +109,9 @@ function update!(fa::FollowedAgent, time::Rational{Int})
     end
     if new_state.status != fa.last_state.status
         push!(fa.log, "$(tStr)$(name) is now $(new_state.status)")
+    end
+    if new_state.careNeed != fa.last_state.careNeed
+        push!(fa.log, "$(tStr)$(name) care need went from $(fa.last_state.careNeed) to $(new_state.careNeed)")
     end
 
     fa.last_state = new_state
