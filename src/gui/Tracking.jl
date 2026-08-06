@@ -36,6 +36,9 @@ mutable struct AgentState
     n_full_siblings::Int64
     n_half_siblings::Int64
     n_children::Int64
+end
+
+mutable struct HousemateState
     status::WorkStatus.T
     careNeed::Int
 end
@@ -43,13 +46,22 @@ end
 function agentState(person::Person)
     n_fsibs, n_hsibs = nSiblings(person)
     n_ch = count(x->!isUndefined(x), person.children)
-    AgentState(person.partner, person.mother, person.father, n_fsibs, n_hsibs, n_ch, person.status, person.careNeedLevel)
+    AgentState(person.partner, person.mother, person.father, n_fsibs, n_hsibs, n_ch)
+end
+
+function housemateState(house::PersonHouse)::Dict{Person, HousemateState}
+    map = Dict{Person, HousemateState}()
+    for person in house.occupants
+        map[person] = HousemateState(person.status, person.careNeedLevel)
+    end
+    map
 end
 
 mutable struct FollowedAgent
     model::Model
     agent::Person
     last_state::AgentState
+    last_hm_states::Dict{Person, HousemateState}
     house::PersonHouse
     log::Log
     names::Naming.NamePool
@@ -61,7 +73,8 @@ end
 
 function pickAgent(model::Model)::FollowedAgent
     agent = rand(model.pop)
-    FollowedAgent(model, agent, agentState(agent), agent.pos, newLog(30), Naming.newPool())
+    house = agent.pos
+    FollowedAgent(model, agent, agentState(agent), housemateState(house), house, newLog(30), Naming.newPool())
 end
 
 function update!(fa::FollowedAgent, time::Rational{Int})
@@ -107,14 +120,35 @@ function update!(fa::FollowedAgent, time::Rational{Int})
         fa_name = getName(fa, fa.last_state.father)
         push!(fa.log, "$(tStr)$(name)'s father, $(fa_name), died")
     end
-    if new_state.status != fa.last_state.status
-        push!(fa.log, "$(tStr)$(name) is now $(new_state.status)")
+
+    new_hm_state = housemateState(fa.house)
+    for (agent, state) in pairs(new_hm_state)
+        name = getName(fa, agent)
+        last = get(fa.last_hm_states, agent, nothing)
+        if isnothing(last)
+            if (agent.age < 1)
+                push!(fa.log, "$(tStr)$(name) was born")
+            else
+                push!(fa.log, "$(tStr)$(name) joined the house")
+            end
+            continue
+        end
+        if state.status != last.status
+            push!(fa.log, "$(tStr)$(name) is now $(state.status)")
+        end
+        if state.careNeed != last.careNeed
+            push!(fa.log, "$(tStr)$(name) care need went from $(last.careNeed) to $(state.careNeed)")
+        end
     end
-    if new_state.careNeed != fa.last_state.careNeed
-        push!(fa.log, "$(tStr)$(name) care need went from $(fa.last_state.careNeed) to $(new_state.careNeed)")
+    for agent in keys(fa.last_hm_states)
+        name = getName(fa, agent)
+        if !haskey(new_hm_state, agent) && agent.alive
+            push!(fa.log, "$(tStr)$(name) left the house")
+        end
     end
 
     fa.last_state = new_state
+    fa.last_hm_states = new_hm_state
 end
 
 function describeAgent(fa::FollowedAgent)::Tuple{String, String}
