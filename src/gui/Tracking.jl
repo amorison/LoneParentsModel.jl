@@ -77,6 +77,24 @@ function pickAgent(model::Model)::FollowedAgent
     FollowedAgent(model, agent, agentState(agent), housemateState(house), house, newLog(30), Naming.newPool())
 end
 
+function statusDescr(status::WorkStatus.T)::String
+    if status == WorkStatus.child
+        "a child"
+    elseif status == WorkStatus.teenager
+        "a teenager"
+    elseif status == WorkStatus.student
+        "a student"
+    elseif status == WorkStatus.FixedShiftEmployed
+        "employed with a fixed shift"
+    elseif status == WorkStatus.FlexibleShiftEmployed
+        "employed with a flexible shift"
+    elseif status == WorkStatus.retired
+        "retired"
+    else
+        "unemployed"
+    end
+end
+
 function update!(fa::FollowedAgent, time::Rational{Int})
     year, month = date2yearsmonths(time)
     tStr = "$(year)/$(month+1): "
@@ -134,7 +152,8 @@ function update!(fa::FollowedAgent, time::Rational{Int})
             continue
         end
         if state.status != last.status
-            push!(fa.log, "$(tStr)$(name) is now $(state.status)")
+            statusStr = statusDescr(state.status)
+            push!(fa.log, "$(tStr)$(name) is now $(statusStr)")
         end
         if state.careNeed != last.careNeed
             push!(fa.log, "$(tStr)$(name) care need went from $(last.careNeed) to $(state.careNeed)")
