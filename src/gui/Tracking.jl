@@ -162,10 +162,10 @@ function describeAgent(fa::FollowedAgent)::Tuple{String, String}
     if !isUndefined(agent.father)
         push!(parents, getName(fa, agent.father) * " (father)")
     end
-    living_parents = join(parents, " & ")
+    parents = join(parents, " & ")
     obs1 = "$(name), $(agent.gender), $(floor(Int, agent.age))\n" *
         "status: $m_status\n" *
-        "living parents: $living_parents\n" *
+        "parents: $parents\n" *
         "$(fa.last_state.n_full_siblings) full siblings\n" *
         "$(fa.last_state.n_half_siblings) half siblings\n" *
         "$(fa.last_state.n_children) children"
